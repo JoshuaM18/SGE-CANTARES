@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Tareas</title>
+    <link rel="stylesheet" href="css/estilos_tareas.css">
+</head>
+<body>
+<h1>Lista de Tareas</h1>
+
+<?php if (!empty($tareas)): ?>
+    <div class="info-curso">
+        <strong>Curso:</strong> <?= htmlspecialchars($tareas[0]['nombre_curso']) ?><br>
+        <strong>Carrera:</strong> <?= htmlspecialchars($tareas[0]['nombre_carrera']) ?><br>
+        <strong>Año:</strong> <?= htmlspecialchars($tareas[0]['anio_academico']) ?><br>
+        <strong>Semestre:</strong> <?= htmlspecialchars($tareas[0]['semestre']) ?>
+    </div>
+<?php endif; ?>
+
+<?php if ($_SESSION['usuario']['rol'] === 'Docente'): ?>
+    <a href="index.php?c=Tarea&a=crear&id_asignacion=<?= $id_asignacion ?>">Crear Nueva Tarea</a>
+<?php endif; ?>
+
+<?php if (!empty($tareas)): ?>
+    <table>
+        <thead>
+            <tr>
+                <th>Título</th>
+                <th>Descripción</th>
+                <th>Fecha Publicación</th>
+                <th>Fecha Entrega</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($tareas as $t): ?>
+                <tr>
+                    <td><?= htmlspecialchars($t['titulo']) ?></td>
+                    <td><?= htmlspecialchars($t['descripcion']) ?></td>
+                    <td><?= $t['fecha_publicacion'] ?></td>
+                    <td><?= $t['fecha_entrega'] ?></td>
+                    <td>
+                        <?php if ($_SESSION['usuario']['rol'] === 'Estudiante'): ?>
+                            <a href="index.php?c=Tarea&a=entregar&id_tarea=<?= $t['id_tarea'] ?>&id_asignacion=<?= $id_asignacion ?>">Entregar</a>
+                        <?php elseif ($_SESSION['usuario']['rol'] === 'Docente'): ?>
+                            <a href="index.php?c=Tarea&a=calificar&id_tarea=<?= $t['id_tarea'] ?>&id_asignacion=<?= $id_asignacion ?>">Calificar</a>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+<?php else: ?>
+    <p>No hay tareas creadas.</p>
+<?php endif; ?>
+
+<a href="index.php">Volver al menú principal</a>
+</body>
+</html>

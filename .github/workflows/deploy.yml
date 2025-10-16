@@ -1,0 +1,51 @@
+name: CI-CD Pipeline - SGE
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1️⃣ Descargar código
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    # 2️⃣ Configurar PHP
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+
+    # 3️⃣ Ejecutar scripts SQL (MySQL)
+    - name: Update MySQL DB
+      uses: mysql-actions/setup-mysql@v1
+      with:
+        mysql version: '8.0'
+        username: root
+        password: root  # Cambia esto según tu DB
+        database: sge
+    - name: Run SQL Scripts
+      run: |
+        mysql -h localhost -u root -proot sge < ./sql/procedimientos.sql
+
+    # 4️⃣ Validaciones básicas de archivos
+    - name: Check critical files
+      run: |
+        if [ ! -f "index.php" ]; then exit 1; fi
+        if [ ! -f "conexion.php" ]; then exit 1; fi
+
+    # 5️⃣ Despliegue al servidor local (SCP a XAMPP local)
+    # Nota: esto solo funciona si tu servidor local es accesible desde GitHub (por VPN o remoto)
+    - name: Deploy to local server
+      uses: appleboy/scp-action@v0.1.2
+      with:
+        host: ${{ secrets.LOCAL_HOST }}
+        username: ${{ secrets.LOCAL_USER }}
+        password: ${{ secrets.LOCAL_PASSWORD }}
+        port: 22
+        source: "./"
+        target: "/opt/lampp/htdocs/SGE"

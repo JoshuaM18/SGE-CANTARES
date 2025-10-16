@@ -1,0 +1,132 @@
+<?php
+require_once __DIR__ . '/../modelo/TareaModelo.php';
+
+class TareaController {
+    private $modelo;
+
+    public function __construct() {
+        $this->modelo = new TareaModelo();
+    }
+
+    // --- Crear tarea (docente) ---
+    public function crear() {
+        if ($_SESSION['usuario']['rol'] !== 'Docente') {
+            echo "No tiene permisos para crear tareas.";
+            return;
+        }
+
+        // Obtener el id_docente real desde la tabla docentes usando el id_usuario
+        $id_usuario = $_SESSION['usuario']['id_usuario'];
+        $id_docente = $this->modelo->obtenerIdDocentePorUsuario($id_usuario);
+
+        if (!$id_docente) {
+            echo "No se encontró el docente.";
+            return;
+        }
+
+        // Obtener solo cursos asignados a este docente
+        $cursos = $this->modelo->obtenerCursosPorDocente($id_docente);
+
+        if (empty($cursos)) {
+            echo "No tiene cursos asignados.";
+            return;
+        }
+
+        // Procesar envío del formulario
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->modelo->crearTarea(
+                $_POST['id_asignacion'],
+                $_POST['titulo'],
+                $_POST['descripcion'],
+                $_POST['fecha_entrega']
+            );
+            header("Location: index.php?c=Tarea&a=listar&id_asignacion=" . $_POST['id_asignacion']);
+            exit;
+        }
+
+        // Cargar la vista pasarle $cursos
+        require __DIR__ . '/../vista/tareas/crear.php';
+    }
+
+    // --- Listar tareas ---
+    public function listar() {
+        $id_asignacion = $_GET['id_asignacion'] ?? null;
+        if (!$id_asignacion) {
+            echo "No se ha seleccionado un curso.";
+            return;
+        }
+
+        $tareas = $this->modelo->obtenerTareasPorAsignacion($id_asignacion);
+        $curso   = $this->modelo->obtenerCursoPorAsignacion($id_asignacion);
+
+        require __DIR__ . '/../vista/tareas/listar.php';
+    }
+
+    // --- Subir entrega (estudiante) ---
+    public function entregar() {
+        if ($_SESSION['usuario']['rol'] !== 'Estudiante') {
+            echo "No tiene permisos para entregar tareas.";
+            return;
+        }
+
+        $id_tarea = $_GET['id_tarea'] ?? null;
+        $id_asignacion = $_GET['id_asignacion'] ?? null;
+
+        $curso = $this->modelo->obtenerCursoPorAsignacion($id_asignacion);
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->modelo->registrarEntrega(
+                $_POST['id_tarea'],
+                $_SESSION['usuario']['id_estudiante'],
+                $_POST['link_drive']
+            );
+            header("Location: index.php?c=Tarea&a=listar&id_asignacion=" . $_POST['id_asignacion']);
+            exit;
+        }
+
+        require __DIR__ . '/../vista/tareas/entregar.php';
+    }
+
+    // --- Calificar entregas (docente) ---
+    public function calificar() {
+        if ($_SESSION['usuario']['rol'] !== 'Docente') {
+            echo "No tiene permisos para calificar entregas.";
+            return;
+        }
+
+        $id_tarea = $_GET['id_tarea'] ?? null;
+        $id_asignacion = $_GET['id_asignacion'] ?? null;
+
+        $curso = $this->modelo->obtenerCursoPorAsignacion($id_asignacion);
+        $entregas = $this->modelo->obtenerEntregasPorTarea($id_tarea);
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->modelo->calificarEntrega(
+                $_POST['id_entrega'],
+                $_POST['calificacion'],
+                $_POST['observaciones']
+            );
+            header("Location: index.php?c=Tarea&a=listar&id_asignacion=" . $_POST['id_asignacion']);
+            exit;
+        }
+
+        require __DIR__ . '/../vista/tareas/calificar.php';
+    }
+
+// --- Ver tareas del estudiante ---
+public function misTareas() {
+    if ($_SESSION['usuario']['rol'] !== 'Estudiante') {
+        echo "No tiene permisos para ver las tareas.";
+        return;
+    }
+
+    $id_estudiante = $_SESSION['usuario']['id_estudiante'];
+    $tareas = $this->modelo->obtenerTareasPorEstudiante($id_estudiante);
+
+    require __DIR__ . '/../vista/tareas/mis_tareas.php';
+}
+
+
+
+}
+?>

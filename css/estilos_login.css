@@ -1,0 +1,602 @@
+/* ========================================
+   VARIABLES Y CONFIGURACIÓN BASE
+   ======================================== */
+:root {
+    --rojo-principal: #E63946;
+    --azul-marino: #1D3557;
+    --azul-claro: #457B9D;
+    --amarillo: #F1C40F;
+    --blanco: #FFFFFF;
+    --gris-claro: #F8F9FA;
+    --sombra: rgba(29, 53, 87, 0.15);
+    --sombra-intensa: rgba(29, 53, 87, 0.3);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ========================================
+   BODY Y CONTENEDOR PRINCIPAL
+   ======================================== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    position: relative;
+    overflow: hidden;
+    background: var(--azul-marino);
+}
+
+/* ========================================
+   CONTENEDOR IZQUIERDO - FORMULARIO
+   ======================================== */
+.login-container {
+    width: 40%;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: linear-gradient(135deg, var(--azul-marino) 0%, var(--azul-claro) 100%);
+    position: relative;
+    z-index: 10;
+    animation: slideInLeft 0.8s ease-out;
+}
+
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Círculos decorativos en el lado del formulario */
+.login-container::before,
+.login-container::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    z-index: 0;
+}
+
+.login-container::before {
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, var(--amarillo) 0%, transparent 70%);
+    top: -100px;
+    left: -100px;
+    opacity: 0.15;
+    animation: float 8s ease-in-out infinite;
+}
+
+.login-container::after {
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(circle, var(--rojo-principal) 0%, transparent 70%);
+    bottom: -80px;
+    left: 50%;
+    opacity: 0.12;
+    animation: float 10s ease-in-out infinite reverse;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translate(0, 0);
+    }
+    50% {
+        transform: translate(20px, -20px);
+    }
+}
+
+/* ========================================
+   FORMULARIO
+   ======================================== */
+form {
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(10px);
+    padding: 2.5rem 2rem;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    max-width: 380px;
+    position: relative;
+    z-index: 5;
+    animation: fadeInScale 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.3s backwards;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Logo decorativo */
+form::before {
+    content: '';
+    position: absolute;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: url('../img/logo HD.png') center/contain no-repeat;
+    background-color: var(--blanco);
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    animation: bounce 2s ease-in-out infinite;
+    border: 3px solid var(--blanco);
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateX(-50%) translateY(0);
+    }
+    50% {
+        transform: translateX(-50%) translateY(-8px);
+    }
+}
+
+/* ========================================
+   TÍTULO
+   ======================================== */
+h2 {
+    color: var(--azul-marino);
+    font-size: 1.75rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 1.8rem;
+    position: relative;
+    animation: fadeInTitle 1s ease-out 0.5s backwards;
+}
+
+@keyframes fadeInTitle {
+    from {
+        opacity: 0;
+        transform: translateY(-15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+h2::after {
+    content: '';
+    display: block;
+    width: 50px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--rojo-principal), var(--amarillo));
+    margin: 0.6rem auto 0;
+    border-radius: 2px;
+    animation: expandBar 0.8s ease-out 0.7s backwards;
+}
+
+@keyframes expandBar {
+    from {
+        width: 0;
+    }
+    to {
+        width: 50px;
+    }
+}
+
+/* ========================================
+   MENSAJES DE ERROR
+   ======================================== */
+p[style*="color:red"],
+p[style*="color: red"] {
+    background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%) !important;
+    color: var(--rojo-principal) !important;
+    padding: 0.9rem !important;
+    border-radius: 10px !important;
+    border-left: 4px solid var(--rojo-principal) !important;
+    margin-bottom: 1.3rem !important;
+    font-weight: 600 !important;
+    font-size: 0.9rem !important;
+    animation: shakeError 0.5s ease-out !important;
+    box-shadow: 0 4px 15px rgba(230, 57, 70, 0.2) !important;
+}
+
+@keyframes shakeError {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-8px);
+    }
+    75% {
+        transform: translateX(8px);
+    }
+}
+
+/* ========================================
+   LABELS
+   ======================================== */
+label {
+    display: block;
+    color: var(--azul-marino);
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+
+/* ========================================
+   INPUTS
+   ======================================== */
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    transition: all 0.3s ease;
+    background: var(--gris-claro);
+    color: var(--azul-marino);
+    margin-bottom: 1.2rem;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+    outline: none;
+    border-color: var(--azul-claro);
+    background: var(--blanco);
+    box-shadow: 0 0 0 4px rgba(69, 123, 157, 0.1);
+    transform: translateY(-2px);
+}
+
+input[type="text"]:hover,
+input[type="password"]:hover {
+    border-color: var(--azul-claro);
+}
+
+/* Animación de entrada para inputs */
+input[type="text"],
+input[type="password"] {
+    animation: fadeInInput 0.6s ease-out backwards;
+}
+
+input[type="text"] {
+    animation-delay: 0.6s;
+}
+
+input[type="password"] {
+    animation-delay: 0.7s;
+}
+
+@keyframes fadeInInput {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* ========================================
+   BOTÓN DE SUBMIT
+   ======================================== */
+button[type="submit"] {
+    width: 100%;
+    padding: 0.9rem;
+    background: linear-gradient(135deg, var(--rojo-principal) 0%, #c41e2c 100%);
+    color: var(--blanco);
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba(230, 57, 70, 0.3);
+    position: relative;
+    overflow: hidden;
+    margin-top: 0.3rem;
+    animation: fadeInButton 0.6s ease-out 0.8s backwards;
+}
+
+@keyframes fadeInButton {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+button[type="submit"]::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+button[type="submit"]:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+button[type="submit"]:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(230, 57, 70, 0.4);
+}
+
+button[type="submit"]:active {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(230, 57, 70, 0.3);
+}
+
+/* ========================================
+   CONTENEDOR DERECHO - SLIDESHOW
+   ======================================== */
+.slideshow-container {
+    width: 60%;
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+    animation: slideInRight 0.8s ease-out;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Slideshow de imágenes */
+.background-slideshow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--azul-marino);
+}
+
+.background-slideshow::before,
+.background-slideshow::after,
+.bg-slide-1,
+.bg-slide-2,
+.bg-slide-3,
+.bg-slide-4,
+.bg-slide-5,
+.bg-slide-6,
+.bg-slide-7,
+.bg-slide-8,
+.bg-slide-9 {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0;
+    animation: slideshow 38.5s infinite;
+}
+
+/* Rutas de las imágenes */
+.background-slideshow::before {
+    background-image: url('../img/1.jpg');
+    animation-delay: 0s;
+}
+
+.background-slideshow::after {
+    background-image: url('../img/2.jpg');
+    animation-delay: 3.5s;
+}
+
+.bg-slide-1 {
+    background-image: url('../img/3.jpg');
+    animation-delay: 7s;
+}
+
+.bg-slide-2 {
+    background-image: url('../img/4.jpg');
+    animation-delay: 10.5s;
+}
+
+.bg-slide-3 {
+    background-image: url('../img/5.jpg');
+    animation-delay: 14s;
+}
+
+.bg-slide-4 {
+    background-image: url('../img/6.jpg');
+    animation-delay: 17.5s;
+}
+
+.bg-slide-5 {
+    background-image: url('../img/7.jpg');
+    animation-delay: 21s;
+}
+
+.bg-slide-6 {
+    background-image: url('../img/8.jpg');
+    animation-delay: 24.5s;
+}
+
+.bg-slide-7 {
+    background-image: url('../img/9.jpg');
+    animation-delay: 28s;
+}
+
+.bg-slide-8 {
+    background-image: url('../img/10.jpg');
+    animation-delay: 31.5s;
+}
+
+.bg-slide-9 {
+    background-image: url('../img/11.jpg');
+    animation-delay: 35s;
+}
+
+@keyframes slideshow {
+    0% {
+        opacity: 0;
+        transform: scale(1);
+    }
+    3% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    9% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+    12% {
+        opacity: 0;
+        transform: scale(1.08);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(1);
+    }
+}
+
+/* Overlay decorativo sobre las imágenes */
+.background-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        135deg,
+        rgba(29, 53, 87, 0.2) 0%,
+        transparent 50%,
+        rgba(230, 57, 70, 0.15) 100%
+    );
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Elementos decorativos flotantes en el slideshow */
+.circle-decoration {
+    position: absolute;
+    border-radius: 50%;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.circle-decoration:nth-child(1) {
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, var(--amarillo) 0%, transparent 70%);
+    top: 10%;
+    right: 10%;
+    opacity: 0.08;
+    animation: float 12s ease-in-out infinite;
+}
+
+.circle-decoration:nth-child(2) {
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle, var(--blanco) 0%, transparent 70%);
+    bottom: 15%;
+    right: 15%;
+    opacity: 0.06;
+    animation: float 15s ease-in-out infinite reverse;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+@media (max-width: 968px) {
+    body {
+        flex-direction: column;
+    }
+
+    .login-container {
+        width: 100%;
+        min-height: auto;
+        padding: 2rem 1rem;
+    }
+
+    .slideshow-container {
+        width: 100%;
+        min-height: 50vh;
+    }
+
+    form {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-container {
+        padding: 1.5rem 1rem;
+    }
+
+    form {
+        padding: 2rem 1.5rem;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+        padding: 0.75rem 0.9rem;
+        font-size: 0.9rem;
+    }
+
+    button[type="submit"] {
+        padding: 0.85rem;
+        font-size: 0.95rem;
+    }
+
+    form::after {
+        font-size: 2.5rem;
+        width: 60px;
+        height: 60px;
+    }
+}
+
+/* ========================================
+   ANIMACIÓN DE CARGA INICIAL
+   ======================================== */
+body {
+    animation: pageLoad 0.5s ease-out;
+}
+
+@keyframes pageLoad {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
