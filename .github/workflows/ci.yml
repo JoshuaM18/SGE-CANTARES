@@ -23,6 +23,12 @@ jobs:
           --health-timeout=5s
           --health-retries=3
 
+    env:
+      DB_HOST: 127.0.0.1
+      DB_NAME: sistema_gestion_educativa
+      DB_USER: ciuser
+      DB_PASS: ci_pass
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -45,6 +51,8 @@ jobs:
             echo "Waiting for MySQL..."
             sleep 3
           done
+          # Pequeña espera adicional para asegurar que MySQL esté listo
+          sleep 5
 
       - name: Configure MySQL user for CI
         run: |
@@ -64,7 +72,7 @@ jobs:
       - name: Test PHP MySQL connection
         run: |
           php -r "
-          \$mysqli = new mysqli('127.0.0.1', 'ciuser', 'ci_pass', 'sistema_gestion_educativa');
+          \$mysqli = new mysqli(getenv('DB_HOST'), getenv('DB_USER'), getenv('DB_PASS'), getenv('DB_NAME'));
           if (\$mysqli->connect_error) { echo 'MySQL connection failed: ' . \$mysqli->connect_error; exit(1); }
           echo 'MySQL connection OK';"
 
