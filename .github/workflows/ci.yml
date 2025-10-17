@@ -45,17 +45,12 @@ jobs:
         env:
           MYSQL_PWD: 1234
         run: |
-          for i in $(seq 1 30); do
-            mysqladmin ping -h 127.0.0.1 -uroot > /dev/null 2>&1
-            if [ $? -eq 0 ]; then
-              echo "MySQL is ready!"
-              exit 0
-            fi
+          echo "Esperando a que MySQL esté listo..."
+          until mysqladmin ping -h 127.0.0.1 -uroot > /dev/null 2>&1; do
             echo "Waiting for MySQL..."
             sleep 2
           done
-          echo "MySQL did not start in time"
-          exit 1
+          echo "MySQL is ready!"
 
       # 5️⃣ Crear usuario CI y otorgar permisos
       - name: Configure MySQL user for CI
