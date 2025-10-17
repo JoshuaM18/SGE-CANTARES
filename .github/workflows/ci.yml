@@ -1,0 +1,54 @@
+name: CI Pipeline - SGE
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1️⃣ Descargar el código del repositorio
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # 2️⃣ Configurar PHP 8.2
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+
+    # 3️⃣ Verificar sintaxis PHP
+    - name: Validate PHP syntax
+      run: |
+        find . -name "*.php" -print0 | xargs -0 -n1 php -l
+
+    # 4️⃣ Validar archivos críticos
+    - name: Check required files
+      run: |
+        if [ ! -f "index.php" ]; then echo "Falta index.php"; exit 1; fi
+        if [ ! -f "conexion.php" ]; then echo "Falta conexion.php"; exit 1; fi
+        echo "Archivos verificados correctamente ✅"
+
+    # 5️⃣ Simular validación de SQL
+    - name: Check SQL scripts exist
+      run: |
+        if [ ! -f "./sql/procedimientos.sql" ]; then
+          echo "❌ Falta el archivo procedimientos.sql"
+          exit 1
+        fi
+        echo "Archivo SQL encontrado ✅"
+
+    # 6️⃣ Crear artefacto ZIP del sistema
+    - name: Create ZIP artifact
+      run: |
+        zip -r SGE_build.zip . -x "*.git*" "vendor/*"
+    
+    # 7️⃣ Subir artefacto al panel de GitHub Actions
+    - name: Upload build artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: SGE_build
+        path: SGE_build.zip
