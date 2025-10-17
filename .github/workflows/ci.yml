@@ -10,39 +10,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # 1️⃣ Descargar código del repositorio
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    # 2️⃣ Configurar PHP
     - name: Set up PHP
       uses: shivammathur/setup-php@v2
       with:
         php-version: '8.2'
 
-    # 3️⃣ Validaciones básicas de archivos
     - name: Check critical files
       run: |
-        if [ ! -f "index.php" ]; then
-          echo "index.php no encontrado"; exit 1
-        fi
-        if [ ! -f "conexion.php" ]; then
-          echo "conexion.php no encontrado"; exit 1
-        fi
+        if [ ! -f "index.php" ]; then exit 1; fi
+        if [ ! -f "conexion.php" ]; then exit 1; fi
 
-    # 4️⃣ Iniciar MySQL
-    - name: Start MySQL
+    - name: Install MySQL and run scripts
       run: |
-        sudo systemctl start mysql
-        until sudo mysqladmin ping --silent; do sleep 1; done
-
-    # 5️⃣ Crear base de datos y ejecutar script SQL
-    - name: Setup MySQL Database
-      run: |
-        mysql -uroot -p1234 -e "CREATE DATABASE IF NOT EXISTS sistema_gestion_educativa;"
+        sudo apt-get update
+        sudo apt-get install -y mysql-server
+        sudo service mysql start
+        mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '1234'; FLUSH PRIVILEGES;"
+        mysql -e "CREATE DATABASE IF NOT EXISTS sistema_gestion_educativa;"
         mysql -uroot -p1234 sistema_gestion_educativa < ./sql/procedimientos.sql
 
-    # 6️⃣ Verificar que el proyecto carga (opcional)
     - name: Test project endpoint
       run: |
         curl -I http://localhost/SGE/index.php || echo "No se pudo acceder a index.php"
