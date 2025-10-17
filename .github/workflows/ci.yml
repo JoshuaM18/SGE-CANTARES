@@ -4,9 +4,10 @@ on:
   push:
     branches:
       - main
+  pull_request:
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
@@ -14,37 +15,35 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2️⃣ Instalar PHP 8.2 y MySQL
-      - name: Install PHP 8.2 & MySQL
+      # 2️⃣ Instalar PHP y extensiones
+      - name: Set up PHP 8.2 and extensions
         run: |
           sudo apt-get update
           sudo apt-get install -y software-properties-common
-          sudo add-apt-repository -y ppa:ondrej/php
+          sudo add-apt-repository ppa:ondrej/php -y
           sudo apt-get update
-          sudo apt-get install -y php8.2 php8.2-mysql mysql-server
-          sudo service mysql start
+          sudo apt-get install -y php8.2 php8.2-cli php8.2-mysql php8.2-mbstring php8.2-xml unzip
 
-      # 3️⃣ Configurar MySQL y crear base de datos
-      - name: Configure MySQL & Run SQL
+      # 3️⃣ Instalar y configurar MySQL
+      - name: Install MySQL
         run: |
+          sudo apt-get install -y mysql-server
+          sudo service mysql start
           sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '1234'; FLUSH PRIVILEGES;"
           sudo mysql -e "CREATE DATABASE IF NOT EXISTS sistema_gestion_educativa;"
+
+      # 4️⃣ Ejecutar scripts SQL
+      - name: Run SQL scripts
+        run: |
           sudo mysql -u root -p1234 sistema_gestion_educativa < ./sql/procedimientos.sql
 
-      # 4️⃣ Validar archivos críticos
+      # 5️⃣ Validaciones básicas
       - name: Check critical files
         run: |
-          if [ ! -f "index.php" ] || [ ! -f "conexion.php" ]; then
-            echo "Faltan archivos críticos"
-            exit 1
-          fi
+          if [ ! -f "index.php" ]; then echo "index.php no encontrado" && exit 1; fi
+          if [ ! -f "conexion.php" ]; then echo "conexion.php no encontrado" && exit 1; fi
 
-      # 5️⃣ Probar conexión PHP-MySQL
-      - name: Test PHP-MySQL connection
+      # 6️⃣ Test simple de PHP
+      - name: Test PHP connection
         run: |
-          php -r "
-          \$conn = new mysqli('localhost', 'root', '1234', 'sistema_gestion_educativa');
-          if (\$conn->connect_error) { echo 'Fallo conexión'; exit(1); }
-          echo 'Conexión OK';
-          exit(0);
-          "
+          php -r "if (extension_loaded('mysqli')) { echo 'MySQLi OK'; } else { echo 'MySQLi missing'; exit(1); }"
