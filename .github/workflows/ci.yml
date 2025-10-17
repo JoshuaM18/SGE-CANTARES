@@ -58,12 +58,25 @@ jobs:
           mysql -h 127.0.0.1 -uroot -p1234 -e "CREATE USER IF NOT EXISTS 'ciuser'@'%' IDENTIFIED BY 'ci_pass';"
           mysql -h 127.0.0.1 -uroot -p1234 -e "GRANT ALL PRIVILEGES ON *.* TO 'ciuser'@'%'; FLUSH PRIVILEGES;"
 
-      # 6️⃣ Ejecutar scripts SQL: schema, procedimientos y datos de prueba
+      # 6️⃣ Ejecutar scripts SQL
       - name: Run SQL scripts
         run: |
-          mysql -h 127.0.0.1 -uciuser -pci_pass sistema_gestion_educativa < ./sql/schema.sql
-          mysql -h 127.0.0.1 -uciuser -pci_pass sistema_gestion_educativa < ./sql/procedimientos.sql
-          mysql -h 127.0.0.1 -uciuser -pci_pass sistema_gestion_educativa < ./sql/data.sql
+          if [ ! -f "./sql/estructura.sql" ]; then
+            echo "Error: ./sql/estructura.sql no encontrado"
+            exit 1
+          fi
+          if [ ! -f "./sql/procedimidientos.sql" ]; then
+            echo "Error: ./sql/procedimidientos.sql no encontrado"
+            exit 1
+          fi
+
+          echo "Ejecutando estructura.sql..."
+          mysql -h 127.0.0.1 -uciuser -pci_pass sistema_gestion_educativa < ./sql/estructura.sql
+
+          echo "Ejecutando procedimidientos.sql..."
+          mysql -h 127.0.0.1 -uciuser -pci_pass sistema_gestion_educativa < ./sql/procedimidientos.sql
+
+          echo "SQL ejecutado correctamente"
 
       # 7️⃣ Configurar variables de entorno para tests
       - name: Set environment variables for DB
