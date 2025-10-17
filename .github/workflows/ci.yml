@@ -6,49 +6,55 @@ on:
       - main
 
 jobs:
-  build:
+  ci:
     runs-on: ubuntu-latest
 
     steps:
-    # 1️⃣ Descargar el código del repositorio
-    - name: Checkout code
+    # 1️⃣ Descargar el código
+    - name: Checkout repository
       uses: actions/checkout@v3
 
-    # 2️⃣ Configurar PHP 8.2
+    # 2️⃣ Configurar PHP
     - name: Set up PHP
       uses: shivammathur/setup-php@v2
       with:
         php-version: '8.2'
 
-    # 3️⃣ Verificar sintaxis PHP
-    - name: Validate PHP syntax
+    # 3️⃣ Validar que los archivos críticos existan
+    - name: Check critical files
       run: |
-        find . -name "*.php" -print0 | xargs -0 -n1 php -l
-
-    # 4️⃣ Validar archivos críticos
-    - name: Check required files
-      run: |
-        if [ ! -f "index.php" ]; then echo "Falta index.php"; exit 1; fi
-        if [ ! -f "conexion.php" ]; then echo "Falta conexion.php"; exit 1; fi
-        echo "Archivos verificados correctamente ✅"
-
-    # 5️⃣ Simular validación de SQL
-    - name: Check SQL scripts exist
-      run: |
-        if [ ! -f "./sql/procedimientos.sql" ]; then
-          echo "❌ Falta el archivo procedimientos.sql"
+        if [ ! -f "index.php" ]; then
+          echo "Falta index.php"
           exit 1
         fi
-        echo "Archivo SQL encontrado ✅"
+        if [ ! -f "conexion.php" ]; then
+          echo "Falta conexion.php"
+          exit 1
+        fi
+        echo "Todos los archivos críticos existen ✅"
 
-    # 6️⃣ Crear artefacto ZIP del sistema
-    - name: Create ZIP artifact
-      run: |
-        zip -r SGE_build.zip . -x "*.git*" "vendor/*"
-    
-    # 7️⃣ Subir artefacto al panel de GitHub Actions
-    - name: Upload build artifact
-      uses: actions/upload-artifact@v4
+    # 4️⃣ Configurar MySQL y ejecutar scripts SQL
+    - name: Set up MySQL
+      uses: mysql-actions/setup-mysql@v1
       with:
-        name: SGE_build
-        path: SGE_build.zip
+        mysql version: '8.0'
+        username: root
+        password: root   # Cambiar según tu configuración
+        database: sge
+
+    - name: Run SQL scripts
+      run: |
+        mysql -h localhost -u root -proot sge < ./sql/procedimientos.sql
+        echo "Scripts SQL ejecutados ✅"
+
+    # 5️⃣ Probar el proyecto vía Ngrok
+    - name: Test project via Ngrok
+      run: |
+        NGROK_URL="https://d89445bd5647.ngrok-free.app/SGE/index.php"
+        HTTP_STATUS=$(curl -o /dev/null -s -w "%{http_code}" $NGROK_URL)
+        echo "HTTP Status: $HTTP_STATUS"
+        if [ "$HTTP_STATUS" != "200" ]; then
+          echo "Error: el proyecto no está accesible vía Ngrok"
+          exit 1
+        fi
+        echo "Proyecto accesible vía Ngrok ✅"
