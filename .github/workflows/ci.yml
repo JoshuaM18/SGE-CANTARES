@@ -41,19 +41,21 @@ jobs:
           curl -sS https://getcomposer.org/installer | php
           sudo mv composer.phar /usr/local/bin/composer
 
-      # 4️⃣ Esperar a que MySQL esté listo usando loop
+      # 4️⃣ Instalar cliente MySQL y esperar a que MySQL esté listo
       - name: Wait for MySQL
         env:
           MYSQL_PWD: 1234
         run: |
+          sudo apt-get update
+          sudo apt-get install -y default-mysql-client
           echo "Esperando a que MySQL esté listo..."
-          for i in $(seq 1 30); do
+          for i in $(seq 1 60); do
             mysql -h mysql -uroot -p$MYSQL_PWD -e "SELECT 1" > /dev/null 2>&1
             if [ $? -eq 0 ]; then
               echo "MySQL is ready!"
               break
             fi
-            echo "Waiting for MySQL... ($i/30)"
+            echo "Waiting for MySQL... ($i/60)"
             sleep 2
           done
 
