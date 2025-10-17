@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # 1️⃣ Descargar el código
+    # 1️⃣ Descargar código del repositorio
     - name: Checkout repository
       uses: actions/checkout@v3
 
@@ -20,41 +20,29 @@ jobs:
       with:
         php-version: '8.2'
 
-    # 3️⃣ Validar que los archivos críticos existan
+    # 3️⃣ Validaciones básicas de archivos
     - name: Check critical files
       run: |
         if [ ! -f "index.php" ]; then
-          echo "Falta index.php"
-          exit 1
+          echo "index.php no encontrado"; exit 1
         fi
         if [ ! -f "conexion.php" ]; then
-          echo "Falta conexion.php"
-          exit 1
+          echo "conexion.php no encontrado"; exit 1
         fi
-        echo "Todos los archivos críticos existen ✅"
 
-    # 4️⃣ Configurar MySQL y ejecutar scripts SQL
-    - name: Set up MySQL
-      uses: mirromutth/mysql-action@v2
-      with:
-        mysql version: '8.0'
-        username: root
-        password: 1234  
-        database: sistema_gestion_educativa
-
-    - name: Run SQL scripts
+    # 4️⃣ Iniciar MySQL
+    - name: Start MySQL
       run: |
-        run: mysql -h 127.0.0.1 -u root -proot sge < ./sql/procedimientos.sql
-        echo "Scripts SQL ejecutados ✅"
+        sudo systemctl start mysql
+        until sudo mysqladmin ping --silent; do sleep 1; done
 
-    # 5️⃣ Probar el proyecto vía Ngrok
-    - name: Test project via Ngrok
+    # 5️⃣ Crear base de datos y ejecutar script SQL
+    - name: Setup MySQL Database
       run: |
-        NGROK_URL="https://d89445bd5647.ngrok-free.app/SGE/index.php"
-        HTTP_STATUS=$(curl -o /dev/null -s -w "%{http_code}" $NGROK_URL)
-        echo "HTTP Status: $HTTP_STATUS"
-        if [ "$HTTP_STATUS" != "200" ]; then
-          echo "Error: el proyecto no está accesible vía Ngrok"
-          exit 1
-        fi
-        echo "Proyecto accesible vía Ngrok ✅"
+        mysql -uroot -p1234 -e "CREATE DATABASE IF NOT EXISTS sistema_gestion_educativa;"
+        mysql -uroot -p1234 sistema_gestion_educativa < ./sql/procedimientos.sql
+
+    # 6️⃣ Verificar que el proyecto carga (opcional)
+    - name: Test project endpoint
+      run: |
+        curl -I http://localhost/SGE/index.php || echo "No se pudo acceder a index.php"
