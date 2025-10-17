@@ -65,16 +65,16 @@ jobs:
             echo "Error: ./sql/estructura.sql no encontrado"
             exit 1
           fi
-          if [ ! -f "./sql/procedimidientos.sql" ]; then
-            echo "Error: ./sql/procedimidientos.sql no encontrado"
+          if [ ! -f "./sql/procedimientos.sql" ]; then
+            echo "Error: ./sql/procedimientos.sql no encontrado"
             exit 1
           fi
 
           echo "Ejecutando estructura.sql..."
           mysql -h 127.0.0.1 -uciuser -pci_pass sistema_gestion_educativa < ./sql/estructura.sql
 
-          echo "Ejecutando procedimidientos.sql..."
-          mysql -h 127.0.0.1 -uciuser -pci_pass sistema_gestion_educativa < ./sql/procedimidientos.sql
+          echo "Ejecutando procedimientos.sql..."
+          mysql -h 127.0.0.1 -uciuser -pci_pass sistema_gestion_educativa < ./sql/procedimientos.sql
 
           echo "SQL ejecutado correctamente"
 
