@@ -24,11 +24,9 @@ jobs:
           --health-retries=3
 
     steps:
-      # 1️⃣ Descargar código
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2️⃣ Instalar PHP 8.2 y extensiones
       - name: Set up PHP 8.2 and extensions
         uses: shivammathur/setup-php@v2
         with:
@@ -36,13 +34,11 @@ jobs:
           extensions: mysqli, mbstring, xml, xdebug
           coverage: xdebug
 
-      # 3️⃣ Instalar Composer
       - name: Install Composer
         run: |
           curl -sS https://getcomposer.org/installer | php
           sudo mv composer.phar /usr/local/bin/composer
 
-      # 4️⃣ Esperar a que MySQL esté listo
       - name: Wait for MySQL
         run: |
           until mysqladmin ping -h 127.0.0.1 -uroot -p1234 --silent; do
@@ -50,25 +46,21 @@ jobs:
             sleep 3
           done
 
-      # 5️⃣ Crear usuario CI y otorgar permisos
       - name: Configure MySQL user for CI
         run: |
           mysql -h 127.0.0.1 -uroot -p1234 -e "CREATE USER IF NOT EXISTS 'ciuser'@'%' IDENTIFIED BY 'ci_pass';"
           mysql -h 127.0.0.1 -uroot -p1234 -e "GRANT ALL PRIVILEGES ON *.* TO 'ciuser'@'%'; FLUSH PRIVILEGES;"
 
-      # 6️⃣ Ejecutar scripts SQL
       - name: Run SQL scripts
         run: |
           mysql -h 127.0.0.1 -uciuser -pci_pass sistema_gestion_educativa < ./sql/procedimientos.sql
 
-      # 7️⃣ Validaciones básicas de archivos
       - name: Check critical files
         run: |
           for file in index.php conexion.php; do
             if [ ! -f "$file" ]; then echo "$file no encontrado" && exit 1; fi
           done
 
-      # 8️⃣ Test de conexión PHP a MySQL
       - name: Test PHP MySQL connection
         run: |
           php -r "
@@ -76,11 +68,12 @@ jobs:
           if (\$mysqli->connect_error) { echo 'MySQL connection failed: ' . \$mysqli->connect_error; exit(1); }
           echo 'MySQL connection OK';"
 
-      # 9️⃣ Ejecutar pruebas unitarias con PHPUnit y Code Coverage
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist
+
       - name: Run PHPUnit tests
         run: |
           if [ -f "phpunit.xml" ]; then
-            composer install --no-interaction --prefer-dist
             chmod +x ./vendor/bin/phpunit
             ./vendor/bin/phpunit --configuration phpunit.xml --testdox --colors=always --coverage-text
           else
