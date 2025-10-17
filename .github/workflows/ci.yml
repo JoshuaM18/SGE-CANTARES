@@ -14,21 +14,28 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2️⃣ Instalar PHP y MySQL
-      - name: Set up PHP and MySQL
+      # 2️⃣ Configurar PHP 8.2 con extensión MySQL
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+          extensions: mysqli
+
+      # 3️⃣ Instalar y arrancar MySQL
+      - name: Install MySQL
         run: |
           sudo apt-get update
-          sudo apt-get install -y php8.2 php8.2-mysql mysql-server
+          sudo apt-get install -y mysql-server
           sudo service mysql start
 
-      # 3️⃣ Configurar la base de datos
+      # 4️⃣ Configurar base de datos
       - name: Configure MySQL
         run: |
           sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '1234'; FLUSH PRIVILEGES;"
           sudo mysql -u root -p1234 -e "CREATE DATABASE IF NOT EXISTS sistema_gestion_educativa;"
           sudo mysql -u root -p1234 sistema_gestion_educativa < ./sql/procedimientos.sql
 
-      # 4️⃣ Validaciones básicas de archivos
+      # 5️⃣ Validaciones básicas de archivos
       - name: Check critical files
         run: |
           if [ ! -f "index.php" ]; then exit 1; fi
