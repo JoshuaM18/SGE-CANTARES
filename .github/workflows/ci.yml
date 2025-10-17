@@ -90,11 +90,12 @@ jobs:
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist
 
-      # 1️⃣1️⃣ Ejecutar PHPUnit con todos los tests
+      # 1️⃣1️⃣ Ejecutar PHPUnit con todos los tests de manera confiable
       - name: Run PHPUnit tests
         run: |
+          chmod +x ./vendor/bin/phpunit
           if [ -f "phpunit.xml" ]; then
-            chmod +x ./vendor/bin/phpunit
+            echo "Usando phpunit.xml"
             ./vendor/bin/phpunit --configuration phpunit.xml --testdox --colors=always --coverage-text
           else
             echo "No phpunit.xml found, running individual tests"
@@ -102,3 +103,8 @@ jobs:
             ./vendor/bin/phpunit tests/UsuarioModeloTest.php
             ./vendor/bin/phpunit tests/UsuarioControllerTest.php
           fi
+        env:
+          DB_HOST: ${{ env.DB_HOST }}
+          DB_NAME: ${{ env.DB_NAME }}
+          DB_USER: ${{ env.DB_USER }}
+          DB_PASS: ${{ env.DB_PASS }}
