@@ -50,14 +50,18 @@ jobs:
 
       # 5️⃣ Crear usuario CI y otorgar permisos
       - name: Configure MySQL user for CI
+        env:
+          MYSQL_PWD: 1234
         run: |
-          mysql -h 127.0.0.1 -uroot -p1234 -e "CREATE USER IF NOT EXISTS 'ciuser'@'%' IDENTIFIED BY 'ci_pass';"
-          mysql -h 127.0.0.1 -uroot -p1234 -e "GRANT ALL PRIVILEGES ON *.* TO 'ciuser'@'%'; FLUSH PRIVILEGES;"
+          mysql -h 127.0.0.1 -uroot -e "CREATE USER IF NOT EXISTS 'ciuser'@'%' IDENTIFIED BY 'ci_pass';"
+          mysql -h 127.0.0.1 -uroot -e "GRANT ALL PRIVILEGES ON *.* TO 'ciuser'@'%'; FLUSH PRIVILEGES;"
 
       # 6️⃣ Ejecutar scripts SQL (tablas y procedimientos)
       - name: Run SQL scripts
+        env:
+          MYSQL_PWD: ci_pass
         run: |
-          mysql -h 127.0.0.1 -uciuser -pci_pass sistema_gestion_educativa < ./sql/procedimientos.sql
+          mysql -h 127.0.0.1 -uciuser sistema_gestion_educativa < ./sql/procedimientos.sql
 
       # 7️⃣ Configurar variables de entorno para Conexion.php
       - name: Set environment variables for DB
