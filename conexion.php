@@ -1,6 +1,6 @@
 <?php
 class Conexion {
-    private $host = "localhost";
+    private $host = "127.0.0.1";
     private $db = "sistema_gestion_educativa";
     private $user = "root";       // Cambia si tu usuario es distinto
     private $pass = "1234";           // Cambia si tu contraseña es distinta
