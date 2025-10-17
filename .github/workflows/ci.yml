@@ -35,16 +35,16 @@ jobs:
 
     # 4️⃣ Configurar MySQL y ejecutar scripts SQL
     - name: Set up MySQL
-      uses: mysql-actions/setup-mysql@v1
+      uses: mirromutth/mysql-action@v2
       with:
         mysql version: '8.0'
         username: root
-        password: root   # Cambiar según tu configuración
-        database: sge
+        password: 1234  
+        database: sistema_gestion_educativa
 
     - name: Run SQL scripts
       run: |
-        mysql -h localhost -u root -proot sge < ./sql/procedimientos.sql
+        run: mysql -h 127.0.0.1 -u root -proot sge < ./sql/procedimientos.sql
         echo "Scripts SQL ejecutados ✅"
 
     # 5️⃣ Probar el proyecto vía Ngrok
