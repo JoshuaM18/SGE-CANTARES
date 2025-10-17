@@ -40,16 +40,12 @@ jobs:
           curl -sS https://getcomposer.org/installer | php
           sudo mv composer.phar /usr/local/bin/composer
 
-      # 4️⃣ Esperar a que MySQL esté listo (sin warning de contraseña)
+      # 4️⃣ Instalar dockerize y esperar MySQL
       - name: Wait for MySQL
-        env:
-          MYSQL_PWD: 1234
         run: |
+          sudo apt-get update && sudo apt-get install -y dockerize
           echo "Esperando a que MySQL esté listo..."
-          until mysqladmin ping -h 127.0.0.1 -uroot > /dev/null 2>&1; do
-            echo "Waiting for MySQL..."
-            sleep 2
-          done
+          dockerize -wait tcp://127.0.0.1:3306 -timeout 60s
           echo "MySQL is ready!"
 
       # 5️⃣ Crear usuario CI y otorgar permisos
@@ -102,4 +98,3 @@ jobs:
             ./vendor/bin/phpunit --configuration phpunit.xml --testdox --colors=always --coverage-text
           else
             echo "No phpunit.xml found, skipping tests"
-          fi
