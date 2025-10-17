@@ -14,23 +14,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2️⃣ Instalar PHP y MySQL
-      - name: Install PHP & MySQL
+      # 2️⃣ Instalar PHP 8.2 y MySQL
+      - name: Install PHP 8.2 & MySQL
         run: |
+          sudo apt-get update
+          sudo apt-get install -y software-properties-common
+          sudo add-apt-repository -y ppa:ondrej/php
           sudo apt-get update
           sudo apt-get install -y php8.2 php8.2-mysql mysql-server
           sudo service mysql start
 
-      # 3️⃣ Configurar MySQL y ejecutar script SQL
+      # 3️⃣ Configurar MySQL y crear base de datos
       - name: Configure MySQL & Run SQL
         run: |
-          sudo mysql <<EOF
-          ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '1234';
-          FLUSH PRIVILEGES;
-          CREATE DATABASE IF NOT EXISTS sistema_gestion_educativa;
-          USE sistema_gestion_educativa;
-          SOURCE ./sql/procedimientos.sql;
-          EOF
+          sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '1234'; FLUSH PRIVILEGES;"
+          sudo mysql -e "CREATE DATABASE IF NOT EXISTS sistema_gestion_educativa;"
+          sudo mysql -u root -p1234 sistema_gestion_educativa < ./sql/procedimientos.sql
 
       # 4️⃣ Validar archivos críticos
       - name: Check critical files
@@ -40,11 +39,12 @@ jobs:
             exit 1
           fi
 
-      # 5️⃣ Opcional: Prueba rápida de conexión PHP a MySQL
+      # 5️⃣ Probar conexión PHP-MySQL
       - name: Test PHP-MySQL connection
         run: |
           php -r "
           \$conn = new mysqli('localhost', 'root', '1234', 'sistema_gestion_educativa');
-          if (\$conn->connect_error) { exit(1); }
+          if (\$conn->connect_error) { echo 'Fallo conexión'; exit(1); }
+          echo 'Conexión OK';
           exit(0);
           "
