@@ -9,6 +9,19 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: 1234
+          MYSQL_DATABASE: sistema_gestion_educativa
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
 
     steps:
       # 1️⃣ Descargar código
@@ -17,30 +30,29 @@ jobs:
 
       # 2️⃣ Instalar PHP y extensiones
       - name: Set up PHP 8.2 and extensions
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y software-properties-common
-          sudo add-apt-repository ppa:ondrej/php -y
-          sudo apt-get update
-          sudo apt-get install -y php8.2 php8.2-cli php8.2-mysql php8.2-mbstring php8.2-xml unzip
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mysqli, mbstring, xml
 
-      # 3️⃣ Instalar MySQL
-      - name: Install MySQL
+      # 3️⃣ Esperar a que MySQL esté listo
+      - name: Wait for MySQL
         run: |
-          sudo apt-get install -y mysql-server
-          sudo service mysql start
+          until mysqladmin ping -h 127.0.0.1 -uroot -p1234 --silent; do
+            echo "Waiting for MySQL..."
+            sleep 3
+          done
 
-      # 4️⃣ Configurar usuario temporal para CI
+      # 4️⃣ Crear usuario CI y otorgar permisos
       - name: Configure MySQL user for CI
         run: |
-          sudo mysql -e "CREATE USER IF NOT EXISTS 'ciuser'@'localhost' IDENTIFIED BY 'ci_pass';"
-          sudo mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'ciuser'@'localhost'; FLUSH PRIVILEGES;"
-          sudo mysql -u ciuser -pci_pass -e "CREATE DATABASE IF NOT EXISTS sistema_gestion_educativa;"
+          mysql -h 127.0.0.1 -uroot -p1234 -e "CREATE USER IF NOT EXISTS 'ciuser'@'%' IDENTIFIED BY 'ci_pass';"
+          mysql -h 127.0.0.1 -uroot -p1234 -e "GRANT ALL PRIVILEGES ON *.* TO 'ciuser'@'%'; FLUSH PRIVILEGES;"
 
       # 5️⃣ Ejecutar scripts SQL
       - name: Run SQL scripts
         run: |
-          sudo mysql -u ciuser -pci_pass sistema_gestion_educativa < ./sql/procedimientos.sql
+          mysql -h 127.0.0.1 -uciuser -pci_pass sistema_gestion_educativa < ./sql/procedimientos.sql
 
       # 6️⃣ Validaciones básicas
       - name: Check critical files
