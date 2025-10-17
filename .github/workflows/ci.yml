@@ -61,26 +61,34 @@ jobs:
         run: |
           mysql -h 127.0.0.1 -uciuser -pci_pass sistema_gestion_educativa < ./sql/procedimientos.sql
 
-      # 7️⃣ Validaciones básicas de archivos
+      # 7️⃣ Configurar variables de entorno para Conexion.php
+      - name: Set environment variables for DB
+        run: |
+          echo "DB_HOST=127.0.0.1" >> $GITHUB_ENV
+          echo "DB_NAME=sistema_gestion_educativa" >> $GITHUB_ENV
+          echo "DB_USER=ciuser" >> $GITHUB_ENV
+          echo "DB_PASS=ci_pass" >> $GITHUB_ENV
+
+      # 8️⃣ Validaciones básicas de archivos
       - name: Check critical files
         run: |
           for file in index.php conexion.php; do
             if [ ! -f "$file" ]; then echo "$file no encontrado" && exit 1; fi
           done
 
-      # 8️⃣ Test de conexión PHP a MySQL
+      # 9️⃣ Test de conexión PHP a MySQL
       - name: Test PHP MySQL connection
         run: |
           php -r "
-          \$mysqli = new mysqli('127.0.0.1', 'ciuser', 'ci_pass', 'sistema_gestion_educativa');
+          \$mysqli = new mysqli(getenv('DB_HOST'), getenv('DB_USER'), getenv('DB_PASS'), getenv('DB_NAME'));
           if (\$mysqli->connect_error) { echo 'MySQL connection failed: ' . \$mysqli->connect_error; exit(1); }
           echo 'MySQL connection OK';"
 
-      # 9️⃣ Instalar dependencias de Composer
+      # 🔟 Instalar dependencias de Composer
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist
 
-      # 🔟 Ejecutar pruebas unitarias con PHPUnit
+      # 1️⃣1️⃣ Ejecutar pruebas unitarias con PHPUnit
       - name: Run PHPUnit tests
         run: |
           if [ -f "phpunit.xml" ]; then
