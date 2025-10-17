@@ -1,5 +1,6 @@
 name: CI Pipeline - SGE
 
+# Ejecutar cuando haya push a la rama main
 on:
   push:
     branches:
@@ -10,33 +11,45 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Descargar código
+      # 1️⃣ Descargar el código
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2️⃣ Configurar PHP 8.2 con extensión MySQL
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: 8.2
-          extensions: mysqli
-
-      # 3️⃣ Instalar y arrancar MySQL
-      - name: Install MySQL
+      # 2️⃣ Instalar PHP 8.2 y MySQL
+      - name: Setup PHP & MySQL
         run: |
           sudo apt-get update
-          sudo apt-get install -y mysql-server
-          sudo service mysql start
+          sudo apt-get install -y php8.2 php8.2-mysql mysql-server
 
-      # 4️⃣ Configurar base de datos
+      # 3️⃣ Configurar MySQL root y crear base de datos
       - name: Configure MySQL
         run: |
-          sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '1234'; FLUSH PRIVILEGES;"
-          sudo mysql -u root -p1234 -e "CREATE DATABASE IF NOT EXISTS sistema_gestion_educativa;"
-          sudo mysql -u root -p1234 sistema_gestion_educativa < ./sql/procedimientos.sql
+          sudo service mysql start
+          sudo mysql <<EOF
+          ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '1234';
+          FLUSH PRIVILEGES;
+          CREATE DATABASE IF NOT EXISTS sistema_gestion_educativa;
+          USE sistema_gestion_educativa;
+          SOURCE ./sql/procedimientos.sql;
+          EOF
 
-      # 5️⃣ Validaciones básicas de archivos
+      # 4️⃣ Validaciones básicas de archivos
       - name: Check critical files
         run: |
-          if [ ! -f "index.php" ]; then exit 1; fi
-          if [ ! -f "conexion.php" ]; then exit 1; fi
+          if [ ! -f "index.php" ]; then
+            echo "Error: index.php no encontrado"
+            exit 1
+          fi
+          if [ ! -f "conexion.php" ]; then
+            echo "Error: conexion.php no encontrado"
+            exit 1
+          fi
+
+      # 5️⃣ Probar conexión PHP-MySQL (opcional)
+      - name: Test PHP MySQL Connection
+        run: |
+          php -r "
+          \$conn = new mysqli('localhost', 'root', '1234', 'sistema_gestion_educativa');
+          if (\$conn->connect_error) { exit(1); } else { echo 'Conexión OK\n'; }
+          \$conn->close();
+          "
