@@ -1,6 +1,5 @@
 name: CI Pipeline - SGE
 
-# Ejecutar cuando haya push a la rama main
 on:
   push:
     branches:
@@ -11,20 +10,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Descargar el código
+      # 1️⃣ Descargar código
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2️⃣ Instalar PHP 8.2 y MySQL
-      - name: Setup PHP & MySQL
+      # 2️⃣ Instalar PHP y MySQL
+      - name: Install PHP & MySQL
         run: |
           sudo apt-get update
           sudo apt-get install -y php8.2 php8.2-mysql mysql-server
-
-      # 3️⃣ Configurar MySQL root y crear base de datos
-      - name: Configure MySQL
-        run: |
           sudo service mysql start
+
+      # 3️⃣ Configurar MySQL y ejecutar script SQL
+      - name: Configure MySQL & Run SQL
+        run: |
           sudo mysql <<EOF
           ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '1234';
           FLUSH PRIVILEGES;
@@ -33,23 +32,19 @@ jobs:
           SOURCE ./sql/procedimientos.sql;
           EOF
 
-      # 4️⃣ Validaciones básicas de archivos
+      # 4️⃣ Validar archivos críticos
       - name: Check critical files
         run: |
-          if [ ! -f "index.php" ]; then
-            echo "Error: index.php no encontrado"
-            exit 1
-          fi
-          if [ ! -f "conexion.php" ]; then
-            echo "Error: conexion.php no encontrado"
+          if [ ! -f "index.php" ] || [ ! -f "conexion.php" ]; then
+            echo "Faltan archivos críticos"
             exit 1
           fi
 
-      # 5️⃣ Probar conexión PHP-MySQL (opcional)
-      - name: Test PHP MySQL Connection
+      # 5️⃣ Opcional: Prueba rápida de conexión PHP a MySQL
+      - name: Test PHP-MySQL connection
         run: |
           php -r "
           \$conn = new mysqli('localhost', 'root', '1234', 'sistema_gestion_educativa');
-          if (\$conn->connect_error) { exit(1); } else { echo 'Conexión OK\n'; }
-          \$conn->close();
+          if (\$conn->connect_error) { exit(1); }
+          exit(0);
           "
