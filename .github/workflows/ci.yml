@@ -15,8 +15,6 @@ jobs:
         env:
           MYSQL_ROOT_PASSWORD: 1234
           MYSQL_DATABASE: sistema_gestion_educativa
-        ports:
-          - 3306:3306
         options: >-
           --health-cmd="mysqladmin ping --silent"
           --health-interval=10s
@@ -28,12 +26,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2️⃣ Instalar PHP 8.2 y extensiones
+      # 2️⃣ Instalar PHP 8.2 y extensiones necesarias
       - name: Set up PHP 8.2 and extensions
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
-          extensions: mysqli, mbstring, xml, xdebug
+          extensions: mysqli, mbstring, xml, xdebug, pdo_mysql
           coverage: xdebug
 
       # 3️⃣ Instalar Composer

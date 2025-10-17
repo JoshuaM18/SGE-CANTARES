@@ -1,8 +1,8 @@
 <?php
 use PHPUnit\Framework\TestCase;
-require_once __DIR__ . '/../controlador/UsuarioController.php';
 require_once __DIR__ . '/../conexion.php';
 require_once __DIR__ . '/../modelo/UsuarioModelo.php';
+require_once __DIR__ . '/../controlador/UsuarioController.php';
 
 class UsuarioControllerTest extends TestCase
 {
@@ -17,6 +17,7 @@ class UsuarioControllerTest extends TestCase
         putenv('DB_PASS=ci_pass');
 
         $this->controller = new UsuarioController();
+
         // Limpiar tabla usuarios antes de cada prueba
         $this->controller->modelo->db->conexion->exec("DELETE FROM usuarios");
     }
@@ -31,7 +32,7 @@ class UsuarioControllerTest extends TestCase
             'estado' => 'Activo'
         ];
 
-        // Capturamos la salida de header() para que no rompa la prueba
+        // Capturar salida de header() para CI
         ob_start();
         $this->controller->guardar($data);
         ob_end_clean();
@@ -48,6 +49,7 @@ class UsuarioControllerTest extends TestCase
     {
         $this->controller->modelo->insertarUsuario('userCtrl', '1234', 'a@b.com', 'Docente', 'Activo');
         $usuario = $this->controller->modelo->obtenerUsuarioPorNombre('userCtrl');
+        $this->assertNotEmpty($usuario);
 
         $data = [
             'id_usuario' => $usuario['id_usuario'],
@@ -72,6 +74,7 @@ class UsuarioControllerTest extends TestCase
     {
         $this->controller->modelo->insertarUsuario('userDelete', '1234', 'del@test.com', 'Personal', 'Activo');
         $usuario = $this->controller->modelo->obtenerUsuarioPorNombre('userDelete');
+        $this->assertNotEmpty($usuario);
 
         ob_start();
         $this->controller->eliminar($usuario['id_usuario']);

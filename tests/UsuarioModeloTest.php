@@ -1,7 +1,9 @@
 <?php
 use PHPUnit\Framework\TestCase;
-require_once __DIR__ . '/../modelo/UsuarioModelo.php';
+
+// Asegúrate de que las rutas coincidan con tu proyecto
 require_once __DIR__ . '/../conexion.php';
+require_once __DIR__ . '/../modelo/UsuarioModelo.php';
 
 class UsuarioModeloTest extends TestCase {
     private $modelo;
@@ -13,6 +15,7 @@ class UsuarioModeloTest extends TestCase {
         putenv('DB_USER=ciuser');
         putenv('DB_PASS=ci_pass');
 
+        // Inicializar modelo
         $this->modelo = new UsuarioModelo();
 
         // Limpiar tabla usuarios antes de cada prueba
@@ -28,12 +31,15 @@ class UsuarioModeloTest extends TestCase {
         $usuario = $this->modelo->obtenerUsuarioPorNombre('testuser');
         $this->assertEquals('testuser', $usuario['nombre_usuario']);
         $this->assertEquals('test@test.com', $usuario['correo']);
+        $this->assertEquals('Administrador', $usuario['rol']);
+        $this->assertEquals('Activo', $usuario['estado']);
     }
 
     public function testObtenerUsuarios() {
         $this->modelo->insertarUsuario('user1', '1234', 'a@test.com', 'Docente', 'Activo');
         $usuarios = $this->modelo->obtenerUsuarios();
         $this->assertCount(1, $usuarios, "Debe haber un usuario en la tabla");
+        $this->assertEquals('user1', $usuarios[0]['nombre_usuario']);
     }
 
     public function testActualizarUsuario() {
@@ -54,10 +60,20 @@ class UsuarioModeloTest extends TestCase {
         $usuario = $this->modelo->obtenerUsuarioPorNombre('user3');
 
         $resultado = $this->modelo->eliminarUsuario($usuario['id_usuario']);
-        $this->assertTrue($resultado);
+        $this->assertTrue($resultado, "El usuario debería eliminarse correctamente");
 
         $usuarioEliminado = $this->modelo->obtenerUsuarioPorId($usuario['id_usuario']);
         $this->assertFalse($usuarioEliminado, "El usuario debería estar eliminado");
+    }
+
+    public function testObtenerUsuarioPorNombreNoExiste() {
+        $usuario = $this->modelo->obtenerUsuarioPorNombre('noexiste');
+        $this->assertFalse($usuario, "Debe retornar false si el usuario no existe");
+    }
+
+    public function testObtenerUsuarioPorIdNoExiste() {
+        $usuario = $this->modelo->obtenerUsuarioPorId(999999);
+        $this->assertFalse($usuario, "Debe retornar false si el ID no existe");
     }
 }
 ?>
