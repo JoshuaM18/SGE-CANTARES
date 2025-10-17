@@ -9,6 +9,7 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+
     services:
       mysql:
         image: mysql:8.0
@@ -19,7 +20,7 @@ jobs:
           --health-cmd="mysqladmin ping --silent"
           --health-interval=10s
           --health-timeout=5s
-          --health-retries=3
+          --health-retries=5
 
     steps:
       # 1️⃣ Descargar código
@@ -40,37 +41,41 @@ jobs:
           curl -sS https://getcomposer.org/installer | php
           sudo mv composer.phar /usr/local/bin/composer
 
-      # 4️⃣ Instalar dockerize y esperar MySQL
+      # 4️⃣ Esperar a que MySQL esté listo usando loop
       - name: Wait for MySQL
+        env:
+          MYSQL_PWD: 1234
         run: |
-          echo "Instalando dockerize..."
-          curl -L https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz -o dockerize.tar.gz
-          tar -C /usr/local/bin -xzvf dockerize.tar.gz
-          rm dockerize.tar.gz
-
           echo "Esperando a que MySQL esté listo..."
-          dockerize -wait tcp://mysql:3306 -timeout 120s
-          echo "MySQL is ready!"
+          for i in $(seq 1 30); do
+            mysql -h 127.0.0.1 -uroot -p$MYSQL_PWD -e "SELECT 1" > /dev/null 2>&1
+            if [ $? -eq 0 ]; then
+              echo "MySQL is ready!"
+              break
+            fi
+            echo "Waiting for MySQL... ($i/30)"
+            sleep 2
+          done
 
       # 5️⃣ Crear usuario CI y otorgar permisos
       - name: Configure MySQL user for CI
         env:
           MYSQL_PWD: 1234
         run: |
-          mysql -h mysql -uroot -p$MYSQL_PWD -e "CREATE USER IF NOT EXISTS 'ciuser'@'%' IDENTIFIED BY 'ci_pass';"
-          mysql -h mysql -uroot -p$MYSQL_PWD -e "GRANT ALL PRIVILEGES ON *.* TO 'ciuser'@'%'; FLUSH PRIVILEGES;"
+          mysql -h 127.0.0.1 -uroot -p$MYSQL_PWD -e "CREATE USER IF NOT EXISTS 'ciuser'@'%' IDENTIFIED BY 'ci_pass';"
+          mysql -h 127.0.0.1 -uroot -p$MYSQL_PWD -e "GRANT ALL PRIVILEGES ON *.* TO 'ciuser'@'%'; FLUSH PRIVILEGES;"
 
       # 6️⃣ Ejecutar scripts SQL (tablas y procedimientos)
       - name: Run SQL scripts
         env:
           MYSQL_PWD: ci_pass
         run: |
-          mysql -h mysql -uciuser -p$MYSQL_PWD sistema_gestion_educativa < ./sql/procedimientos.sql
+          mysql -h 127.0.0.1 -uciuser -p$MYSQL_PWD sistema_gestion_educativa < ./sql/procedimientos.sql
 
       # 7️⃣ Configurar variables de entorno para Conexion.php
       - name: Set environment variables for DB
         run: |
-          echo "DB_HOST=mysql" >> $GITHUB_ENV
+          echo "DB_HOST=127.0.0.1" >> $GITHUB_ENV
           echo "DB_NAME=sistema_gestion_educativa" >> $GITHUB_ENV
           echo "DB_USER=ciuser" >> $GITHUB_ENV
           echo "DB_PASS=ci_pass" >> $GITHUB_ENV
