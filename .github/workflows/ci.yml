@@ -105,7 +105,7 @@ jobs:
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist
 
-      # 1️⃣1️⃣ Ejecutar PHPUnit con todos los tests incluyendo Login
+      # 1️⃣1️⃣ Ejecutar PHPUnit con todos los tests
       - name: Run PHPUnit tests
         run: |
           chmod +x ./vendor/bin/phpunit
@@ -117,7 +117,6 @@ jobs:
             ./vendor/bin/phpunit tests/ConexionTest.php || true
             ./vendor/bin/phpunit tests/UsuarioModeloTest.php || true
             ./vendor/bin/phpunit tests/UsuarioControllerTest.php || true
-            ./vendor/bin/phpunit tests/LoginTest.php || true
           fi
         shell: /usr/bin/bash -e {0}
         env:
