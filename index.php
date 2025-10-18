@@ -57,6 +57,7 @@ if (isset($_SESSION['mensaje_login'])) {
 ?>
 
 <nav>
+    <a href="index.php?c=Estudiante&a=index">Estudiantes</a>
     <a href="index.php?c=Usuario&a=index">Usuarios</a>
     <a href="index.php?c=Docente&a=index">Docentes</a>
     <a href="index.php?c=Padre&a=index">Padres</a>
