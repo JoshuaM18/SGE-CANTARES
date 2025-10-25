@@ -1,0 +1,129 @@
+/* ===============================
+   Variables base (coherencia con estilos_tareas.css)
+   =============================== */
+:root {
+    --rojo-principal: #E63946;
+    --verde: #28a745;
+    --amarillo: #FFC107;
+    --azul-marino: #1D3557;
+    --blanco: #FFFFFF;
+    --gris-claro: #F8F9FA;
+    --sombra: rgba(29, 53, 87, 0.15);
+}
+
+/* ===============================
+   Contenedor principal
+   =============================== */
+.cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: flex-start;
+    margin-bottom: 2rem;
+}
+
+/* ===============================
+   Card individual
+   =============================== */
+.card {
+    background: var(--blanco);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px var(--sombra);
+    padding: 1.5rem;
+    width: 300px;
+    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px var(--sombra);
+}
+
+/* ===============================
+   Colores por estado
+   =============================== */
+.card.pendiente {
+    border-left: 6px solid var(--rojo-principal);
+}
+
+.card.entregado {
+    border-left: 6px solid var(--verde);
+}
+
+.card.parcial {
+    border-left: 6px solid var(--amarillo);
+}
+
+/* ===============================
+   Encabezado de card
+   =============================== */
+.card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: var(--azul-marino);
+}
+
+/* ===============================
+   Información secundaria
+   =============================== */
+.card p {
+    margin: 0.3rem 0;
+    font-size: 0.95rem;
+    color: var(--azul-marino);
+}
+
+/* ===============================
+   Estado destacado
+   =============================== */
+.card .estado {
+    font-weight: 700;
+    margin-top: 0.5rem;
+}
+
+/* ===============================
+   Botón de acción
+   =============================== */
+.card a {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    margin-top: 0.8rem;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.card.pendiente a {
+    background: var(--rojo-principal);
+    color: var(--blanco);
+}
+
+.card.entregado a {
+    background: var(--verde);
+    color: var(--blanco);
+}
+
+.card.parcial a {
+    background: var(--amarillo);
+    color: var(--azul-marino);
+}
+
+.card a:hover {
+    opacity: 0.85;
+}
+
+/* ===============================
+   Responsive
+   =============================== */
+@media (max-width: 1024px) {
+    .card {
+        width: 45%;
+    }
+}
+
+@media (max-width: 768px) {
+    .card {
+        width: 100%;
+    }
+}

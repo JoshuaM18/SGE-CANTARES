@@ -1,0 +1,94 @@
+.ver-entrega-container {
+    width: 90%;
+    max-width: 800px;
+    margin: 2rem auto;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #1D3557;
+    line-height: 1.6;
+    background: #ffffff;
+    padding: 2rem 2.5rem;
+    border-radius: 12px;
+}
+
+/* Encabezado */
+.ver-entrega-container h1 {
+    margin-bottom: 2rem;
+    color: #1D3557;
+}
+
+/* Fila título + estado + calificación */
+.fila-titulo {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.fila-titulo p {
+    margin: 0;
+}
+
+/* Estado entregado */
+.estado-entregado {
+    font-weight: 700;
+    color: #2a9d8f; /* Verde */
+}
+
+/* Calificación */
+.calificacion {
+    font-weight: 600;
+    color: #1D3557;
+}
+
+/* Datos adicionales */
+.ver-entrega-container p {
+    margin-bottom: 0.8rem;
+}
+
+/* Enlace de entrega */
+.ver-entrega-container a {
+    display: inline-block;
+    padding: 0.6rem 1.2rem;
+    background: #2a9d8f;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: 600;
+    margin-top: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.ver-entrega-container a:hover {
+    background: #21867a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(42, 157, 143, 0.3);
+}
+
+/* Botón volver */
+.boton-volver {
+    display: inline-block;
+    margin-top: 1.5rem;
+    background: #2a9d8f;
+    color: #fff;
+    padding: 0.8rem 1.5rem;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.boton-volver:hover {
+    background: #21867a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(42, 157, 143, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .fila-titulo {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+}
