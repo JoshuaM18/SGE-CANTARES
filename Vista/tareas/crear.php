@@ -33,6 +33,11 @@
         <input type="date" id="fecha_entrega" name="fecha_entrega" required>
     </label>
 
+    <!-- 🔹 Nuevo campo para el valor de la tarea -->
+    <label for="valor_tarea">Valor de la tarea (puntos):
+        <input type="number" id="valor_tarea" name="valor_tarea" min="0" step="0.01" required>
+    </label>
+
     <button type="submit">Crear Tarea</button>
 </form>
 
