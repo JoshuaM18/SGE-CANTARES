@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Agregar Nuevo Curso</title>
+    <title>Agregar Cursos desde Catálogo</title>
 </head>
 <body>
-    <h1>Agregar Curso</h1>
-    <form action="index.php?c=Curso&a=guardar" method="POST">
+    <h1>Agregar Cursos desde Catálogo</h1>
+
+    <form action="index.php?c=Curso&a=guardarDesdeCatalogo" method="POST">
         <label>Carrera:</label><br>
         <select name="id_carrera" required>
             <option value="">-- Selecciona Carrera --</option>
@@ -14,16 +15,14 @@
             <?php endforeach; ?>
         </select><br><br>
 
-        <label>Nombre del curso:</label><br>
-        <input type="text" name="nombre_curso" required><br><br>
+        <label>Cursos:</label><br>
+        <select name="cursos[]" multiple size="10" required>
+            <?php foreach($cursos_catalogo as $curso): ?>
+                <option value="<?= $curso['id_catalogo_curso'] ?>"><?= $curso['nombre_curso'] ?></option>
+            <?php endforeach; ?>
+        </select><br><br>
 
-        <label>Descripción:</label><br>
-        <textarea name="descripcion"></textarea><br><br>
-
-        <label>Créditos:</label><br>
-        <input type="number" name="creditos" min="1" required><br><br>
-
-        <button type="submit">Guardar</button>
+        <button type="submit">Guardar Cursos</button>
         <a href="index.php?c=Curso&a=index">Cancelar</a>
     </form>
 </body>

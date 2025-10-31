@@ -5,6 +5,7 @@
 </head>
 <body>
     <h1>Editar Curso</h1>
+
     <form action="index.php?c=Curso&a=actualizar" method="POST">
         <input type="hidden" name="id_curso" value="<?= $curso['id_curso'] ?>">
 
@@ -23,10 +24,7 @@
         <label>Descripción:</label><br>
         <textarea name="descripcion"><?= $curso['descripcion'] ?></textarea><br><br>
 
-        <label>Créditos:</label><br>
-        <input type="number" name="creditos" min="1" value="<?= $curso['creditos'] ?>" required><br><br>
-
-        <button type="submit">Actualizar</button>
+        <button type="submit">Actualizar Curso</button>
         <a href="index.php?c=Curso&a=index">Cancelar</a>
     </form>
 </body>

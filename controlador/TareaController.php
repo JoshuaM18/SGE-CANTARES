@@ -1,14 +1,17 @@
-<?php 
+<?php
 require_once __DIR__ . '/../modelo/TareaModelo.php';
+require_once __DIR__ . '/../modelo/ComentarioModelo.php';
 
 class TareaController {
     private $modelo;
+    private $modeloComentario;
 
     public function __construct() {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
         $this->modelo = new TareaModelo();
+        $this->modeloComentario = new ComentarioModelo();
     }
 
     // --- Crear tarea (Docente) ---
@@ -27,7 +30,6 @@ class TareaController {
         }
 
         $cursos = $this->modelo->obtenerCursosPorDocente($id_docente);
-
         if (empty($cursos)) {
             echo "No tiene cursos asignados.";
             return;
@@ -41,7 +43,6 @@ class TareaController {
             $valor_tarea = $_POST['valor_tarea'];
 
             $this->modelo->insertarTarea($id_asignacion, $titulo, $descripcion, $fecha_entrega, $valor_tarea);
-
             header("Location: index.php?c=Tarea&a=listar&id_asignacion=" . $id_asignacion);
             exit;
         }
@@ -49,7 +50,7 @@ class TareaController {
         require __DIR__ . '/../vista/tareas/crear.php';
     }
 
-    // --- Listar tareas de un curso ---
+    // --- Listar tareas de un curso (Docente) ---
     public function listar() {
         $id_asignacion = $_GET['id_asignacion'] ?? null;
 
@@ -72,13 +73,40 @@ class TareaController {
         $tareas = $this->modelo->obtenerTareasPorAsignacion($id_asignacion);
         $curso = $this->modelo->obtenerCursoPorAsignacion($id_asignacion);
 
+        // Conteo de entregas por tarea
         foreach ($tareas as &$tarea) {
             $conteo = $this->modelo->obtenerConteoEntregasPorTarea($tarea['id_tarea']);
             $tarea['calificadas'] = (int)($conteo['calificadas'] ?? 0);
             $tarea['pendientes'] = (int)($conteo['pendientes'] ?? 0);
         }
 
+        // Cargar comentarios para cada tarea
+        $comentarios_tareas = [];
+        foreach ($tareas as $tarea) {
+            $comentarios_tareas[$tarea['id_tarea']] = $this->modeloComentario->obtenerComentariosPorTarea($tarea['id_tarea']);
+        }
+
         require __DIR__ . '/../vista/tareas/listar.php';
+    }
+
+    // --- Ver tareas del estudiante ---
+    public function misTareas() {
+        if ($_SESSION['usuario']['rol'] !== 'Estudiante') {
+            echo "No tiene permisos para ver las tareas.";
+            return;
+        }
+
+        $id_estudiante = $_SESSION['usuario']['id_estudiante'];
+        $cursos = $this->modelo->obtenerCursosPorEstudiante($id_estudiante);
+        $tareas = $this->modelo->obtenerTareasConEstado($id_estudiante);
+
+        // Obtener comentarios por tarea
+        $comentarios_tareas = [];
+        foreach ($tareas as $tarea) {
+            $comentarios_tareas[$tarea['id_tarea']] = $this->modeloComentario->obtenerComentariosPorTarea($tarea['id_tarea']);
+        }
+
+        require __DIR__ . '/../vista/tareas/mis_tareas.php';
     }
 
     // --- Subir entrega (Estudiante) ---
@@ -143,22 +171,7 @@ class TareaController {
         require __DIR__ . '/../vista/tareas/calificar.php';
     }
 
-    // --- Ver tareas del estudiante ---
-    public function misTareas() {
-        if ($_SESSION['usuario']['rol'] !== 'Estudiante') {
-            echo "No tiene permisos para ver las tareas.";
-            return;
-        }
-
-        $id_estudiante = $_SESSION['usuario']['id_estudiante'];
-
-        $cursos = $this->modelo->obtenerCursosPorEstudiante($id_estudiante);
-        $tareas = $this->modelo->obtenerTareasConEstado($id_estudiante);
-
-        require __DIR__ . '/../vista/tareas/mis_tareas.php';
-    }
-
-    // --- Ver detalle de una entrega ---
+    // --- Ver detalle de entrega ---
     public function verEntrega() {
         if ($_SESSION['usuario']['rol'] !== 'Estudiante') {
             echo "No tiene permisos para ver la entrega.";
@@ -182,5 +195,16 @@ class TareaController {
 
         require __DIR__ . '/../vista/tareas/verEntrega.php';
     }
+
+    public function index() {
+    // Dependiendo del rol, redirige a listar o misTareas
+    if ($_SESSION['usuario']['rol'] === 'Docente') {
+        header("Location: index.php?c=Tarea&a=listar");
+    } else {
+        header("Location: index.php?c=Tarea&a=misTareas");
+    }
+    exit;
+}
+
 }
 ?>

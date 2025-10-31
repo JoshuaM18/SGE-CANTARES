@@ -133,11 +133,15 @@ foreach ($cursos_docente as $curso):
     <p><strong>Valor:</strong> <?= htmlspecialchars($t['valor_tarea']) ?> pts</p>
     <p><strong>Fecha Entrega:</strong> <?= htmlspecialchars($t['fecha_entrega']) ?></p>
     <p class="estado">Calificadas: <?= $calificadas ?> | Pendientes: <?= $pendientes ?></p>
+    
     <?php if ($_SESSION['usuario']['rol'] === 'Docente'): ?>
         <a href="index.php?c=Tarea&a=calificar&id_tarea=<?= $t['id_tarea'] ?>&id_asignacion=<?= $curso['id_asignacion'] ?>">Calificar</a>
     <?php else: ?>
         <a href="index.php?c=Tarea&a=entregar&id_tarea=<?= $t['id_tarea'] ?>&id_asignacion=<?= $curso['id_asignacion'] ?>">Entregar</a>
     <?php endif; ?>
+
+    <!-- Enlace a comentarios -->
+    <a href="index.php?c=Comentario&a=index&id_tarea=<?= $t['id_tarea'] ?>">Ver comentarios</a>
 </div>
 <?php
     endforeach;

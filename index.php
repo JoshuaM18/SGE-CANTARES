@@ -62,6 +62,7 @@ if (isset($_SESSION['mensaje_login'])) {
     <a href="index.php?c=Docente&a=index">Docentes</a>
     <a href="index.php?c=Padre&a=index">Padres</a>
     <a href="index.php?c=Curso&a=index">Cursos</a>
+    <a href="index.php?c=CatalogoCursoAsignar&a=nuevo">Agregar cursos catálogo</a>
     <a href="index.php?c=Carrera&a=index">Carreras</a>
     <a href="index.php?c=Matricula&a=index">Matrículas</a>
 
@@ -95,16 +96,29 @@ if ($controlador !== 'Login') {
 
         if (method_exists($controller, $accion)) {
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                // Enviar POST al método
                 $controller->$accion($_POST);
             } else {
+                // Obtener parámetros GET
                 $id = $_GET['id'] ?? null;
-                if (in_array($accion, ['editar', 'eliminar'])) {
+                $id_tarea = $_GET['id_tarea'] ?? null;
+                $id_asignacion = $_GET['id_asignacion'] ?? null;
+
+                // Controladores que necesitan parámetros específicos
+                if ($controlador === 'Comentario' && in_array($accion, ['index', 'nuevo'])) {
+                    if ($id_tarea !== null) {
+                        $controller->$accion($id_tarea);
+                    } else {
+                        echo "<p>Error: no se proporcionó id_tarea para los comentarios.</p>";
+                    }
+                } elseif ($controlador === 'Tarea' && in_array($accion, ['editar', 'ver', 'calificar', 'entregar'])) {
                     if ($id !== null) {
                         $controller->$accion($id);
                     } else {
-                        echo "<p>Error: No se proporcionó ID para la acción '$accion'.</p>";
+                        echo "<p>Error: no se proporcionó id para la acción '$accion'.</p>";
                     }
                 } else {
+                    // Métodos que no requieren parámetros
                     $controller->$accion();
                 }
             }

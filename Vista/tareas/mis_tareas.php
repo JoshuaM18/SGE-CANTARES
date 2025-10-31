@@ -6,13 +6,11 @@
 <title>Mis Tareas</title>
 <link rel="stylesheet" href="css/cards.css">
 <style>
-/* Colores de paleta */
 :root {
-    --fondo: #0C2340; /* azul oscuro */
+    --fondo: #0C2340;
     --rojo: #D32F2F;
-    --amarillo: #140b46ff;
+    --amarillo: #FBC02D;
     --blanco: #FFFFFF;
-    --negro: #000000;
 }
 
 /* Scroll horizontal para cursos */
@@ -21,9 +19,7 @@
     overflow-x: auto;
     gap: 1rem;
     padding: 1rem 0;
-    margin-bottom: 2rem;
 }
-
 .scroll-cursos button {
     flex: 0 0 auto;
     padding: 0.6rem 1.2rem;
@@ -33,87 +29,61 @@
     color: var(--fondo);
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
-    white-space: nowrap;
 }
-
 .scroll-cursos button.active,
 .scroll-cursos button:hover {
     background: var(--fondo);
     color: var(--blanco);
 }
 
-/* Contenedor de tarjetas */
+/* Tarjetas */
 .cards-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 1.5rem;
 }
-
-/* Cada tarjeta */
 .card {
     display: block;
     background: var(--blanco);
     border-radius: 12px;
-    padding: 1.2rem;
+    padding: 1rem;
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-
-.card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-}
-
-/* Estado de la tarea */
 .card.pendiente {
     border-top: 4px solid var(--amarillo);
 }
-
 .card.pasada {
     border-top: 4px solid var(--fondo);
     background: #f0f4f8;
 }
 
-/* Enlaces */
-.card.pendiente a {
-    color: var(--fondo);
-    text-decoration: none;
-    font-weight: 600;
+/* Comentarios */
+.comentarios {
+    display: none;
+    margin-top: 1rem;
+    border-top: 1px solid #ccc;
+    padding-top: 0.5rem;
 }
-
-.card.pendiente a:hover {
-    text-decoration: underline;
+.comentario {
+    margin-bottom: 0.5rem;
 }
-
-.card.pasada a {
-    color: var(--rojo);
-    text-decoration: none;
-    font-weight: 600;
+.comentario p {
+    margin: 0.2rem 0;
 }
-
-.card.pasada a:hover {
-    text-decoration: underline;
-}
-
-/* Secciones */
-.seccion-tareas {
-    margin-bottom: 3rem;
-}
-.seccion-tareas h2 {
-    color: var(--fondo);
-    margin-bottom: 1rem;
+textarea {
+    width: 100%;
+    resize: vertical;
 }
 </style>
 </head>
 <body>
 <h1>Mis Tareas</h1>
 
-<!-- Scroll cursos -->
+<!-- Cursos -->
 <div class="scroll-cursos">
-    <?php if (!empty($cursos) && is_array($cursos)): ?>
+    <?php if (!empty($cursos)): ?>
         <?php foreach ($cursos as $index => $curso): ?>
-            <button class="<?= $index === 0 ? 'active' : '' ?>" data-curso="<?= htmlspecialchars($curso['id_curso']) ?>">
+            <button class="<?= $index === 0 ? 'active' : '' ?>" data-curso="<?= $curso['id_curso'] ?>">
                 <?= htmlspecialchars($curso['nombre_curso']) ?>
             </button>
         <?php endforeach; ?>
@@ -122,58 +92,124 @@
     <?php endif; ?>
 </div>
 
-<!-- Sección Tareas Pendientes -->
+<!-- Tareas Pendientes -->
 <div class="seccion-tareas">
-    <h2>Tareas Pendientes</h2>
-    <div class="cards-container">
-    <?php
-        $hoy = date('Y-m-d');
-        foreach ($tareas as $tarea):
-            $entregado = ($tarea['id_entrega'] ?? null) !== null;
-            $vencida = !$entregado && ($tarea['fecha_entrega'] < $hoy);
-            if ($entregado || $vencida) continue; // solo pendientes
-            $idCursoTarea = $tarea['id_curso'] ?? '';
-    ?>
-        <div class="card pendiente" data-curso="<?= htmlspecialchars($idCursoTarea) ?>">
-            <h3><?= htmlspecialchars($tarea['titulo']) ?></h3>
-            <p><strong>Descripción:</strong> <?= htmlspecialchars($tarea['descripcion']) ?></p>
-            <p><strong>Valor:</strong> <?= htmlspecialchars($tarea['valor_tarea']) ?> pts</p>
-            <p><strong>Fecha de Entrega:</strong> <?= htmlspecialchars($tarea['fecha_entrega']) ?></p>
-            <p class="estado"><strong>Estado:</strong> Pendiente</p>
-            <a href="index.php?c=Tarea&a=entregar&id_tarea=<?= $tarea['id_tarea'] ?>&id_asignacion=<?= $tarea['id_asignacion'] ?>">Entregar</a>
-        </div>
-    <?php endforeach; ?>
+<h2>Tareas Pendientes</h2>
+<div class="cards-container">
+<?php
+$hoy = date('Y-m-d');
+foreach ($tareas as $tarea):
+    $entregado = ($tarea['id_entrega'] ?? null) !== null;
+    $vencida = !$entregado && ($tarea['fecha_entrega'] < $hoy);
+    if ($entregado || $vencida) continue; // solo pendientes
+    $idCursoTarea = $tarea['id_curso'] ?? '';
+?>
+<div class="card pendiente" data-curso="<?= $idCursoTarea ?>">
+    <h3><?= htmlspecialchars($tarea['titulo']) ?></h3>
+    <p><strong>Descripción:</strong> <?= htmlspecialchars($tarea['descripcion']) ?></p>
+    <p><strong>Valor:</strong> <?= htmlspecialchars($tarea['valor_tarea']) ?> pts</p>
+    <p><strong>Fecha de Entrega:</strong> <?= htmlspecialchars($tarea['fecha_entrega']) ?></p>
+    <p class="estado"><strong>Estado:</strong> Pendiente</p>
+    <a href="index.php?c=Tarea&a=entregar&id_tarea=<?= $tarea['id_tarea'] ?>&id_asignacion=<?= $tarea['id_asignacion'] ?>">Entregar</a>
+
+    <!-- Botón mostrar comentarios -->
+    <button class="toggle-comentarios" data-tarea="<?= $tarea['id_tarea'] ?>">Ver comentarios</button>
+    <div class="comentarios" id="comentarios-<?= $tarea['id_tarea'] ?>">
+        <?php 
+        $comentarios = $comentarios_tareas[$tarea['id_tarea']] ?? [];
+        if (!empty($comentarios)): ?>
+            <?php foreach ($comentarios as $c): ?>
+                <div class="comentario">
+                    <strong>
+                        <?php 
+                        // Mostrar nombre según rol: profesor o alumno
+                        if ($c['rol'] === 'Docente') {
+                            echo htmlspecialchars($c['nombre'] ?? 'Profesor');
+                        } else {
+                            echo htmlspecialchars($c['nombre'] ?? 'Alumno');
+                        }
+                        ?>
+                    </strong> (<?= $c['fecha'] ?>):
+                    <p><?= htmlspecialchars($c['comentario']) ?></p>
+                </div>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <p>No hay comentarios.</p>
+        <?php endif; ?>
+
+        <!-- Formulario agregar comentario -->
+        <form method="POST" action="index.php?c=Comentario&a=guardar">
+            <input type="hidden" name="id_tarea" value="<?= $tarea['id_tarea'] ?>">
+            <input type="hidden" name="id_usuario" value="<?= $_SESSION['usuario']['id_usuario'] ?>">
+            <textarea name="comentario" rows="2" placeholder="Escribe un comentario..." required></textarea>
+            <button type="submit">Agregar comentario</button>
+        </form>
     </div>
 </div>
+<?php endforeach; ?>
+</div>
+</div>
 
-<!-- Sección Tareas Pasadas -->
+<!-- Tareas Pasadas -->
 <div class="seccion-tareas">
-    <h2>Tareas Pasadas</h2>
-    <div class="cards-container">
-    <?php
-        foreach ($tareas as $tarea):
-            $entregado = ($tarea['id_entrega'] ?? null) !== null;
-            $vencida = !$entregado && ($tarea['fecha_entrega'] < $hoy);
-            if (!$entregado && !$vencida) continue; // solo pasadas
-            $idCursoTarea = $tarea['id_curso'] ?? '';
-            $estado = $entregado ? "Entregado" : "Vencida";
-    ?>
-        <div class="card pasada" data-curso="<?= htmlspecialchars($idCursoTarea) ?>">
-            <h3><?= htmlspecialchars($tarea['titulo']) ?></h3>
-            <p><strong>Descripción:</strong> <?= htmlspecialchars($tarea['descripcion']) ?></p>
-            <p><strong>Valor:</strong> <?= htmlspecialchars($tarea['valor_tarea']) ?> pts</p>
-            <p><strong>Fecha de Entrega:</strong> <?= htmlspecialchars($tarea['fecha_entrega']) ?></p>
-            <p class="estado"><strong>Estado:</strong> <?= $estado ?></p>
-            <?php if ($entregado): ?>
-                <a href="index.php?c=Tarea&a=verEntrega&id_tarea=<?= $tarea['id_tarea'] ?>">Ver Entrega</a>
-            <?php endif; ?>
-        </div>
-    <?php endforeach; ?>
+<h2>Tareas Pasadas</h2>
+<div class="cards-container">
+<?php
+foreach ($tareas as $tarea):
+    $entregado = ($tarea['id_entrega'] ?? null) !== null;
+    $vencida = !$entregado && ($tarea['fecha_entrega'] < $hoy);
+    if (!$entregado && !$vencida) continue; // solo pasadas
+    $idCursoTarea = $tarea['id_curso'] ?? '';
+    $estado = $entregado ? "Entregado" : "Vencida";
+?>
+<div class="card pasada" data-curso="<?= $idCursoTarea ?>">
+    <h3><?= htmlspecialchars($tarea['titulo']) ?></h3>
+    <p><strong>Descripción:</strong> <?= htmlspecialchars($tarea['descripcion']) ?></p>
+    <p><strong>Valor:</strong> <?= htmlspecialchars($tarea['valor_tarea']) ?> pts</p>
+    <p><strong>Fecha de Entrega:</strong> <?= htmlspecialchars($tarea['fecha_entrega']) ?></p>
+    <p class="estado"><strong>Estado:</strong> <?= $estado ?></p>
+    <?php if ($entregado): ?>
+        <a href="index.php?c=Tarea&a=verEntrega&id_tarea=<?= $tarea['id_tarea'] ?>">Ver Entrega</a>
+    <?php endif; ?>
+
+    <!-- Botón mostrar comentarios -->
+    <button class="toggle-comentarios" data-tarea="<?= $tarea['id_tarea'] ?>">Ver comentarios</button>
+    <div class="comentarios" id="comentarios-<?= $tarea['id_tarea'] ?>">
+        <?php 
+        $comentarios = $comentarios_tareas[$tarea['id_tarea']] ?? [];
+        if (!empty($comentarios)): ?>
+            <?php foreach ($comentarios as $c): ?>
+                <div class="comentario">
+                    <strong>
+                        <?php 
+                        if ($c['rol'] === 'Docente') {
+                            echo htmlspecialchars($c['nombre'] ?? 'Profesor');
+                        } else {
+                            echo htmlspecialchars($c['nombre'] ?? 'Alumno');
+                        }
+                        ?>
+                    </strong> (<?= $c['fecha'] ?>):
+                    <p><?= htmlspecialchars($c['comentario']) ?></p>
+                </div>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <p>No hay comentarios.</p>
+        <?php endif; ?>
+
+        <form method="POST" action="index.php?c=Comentario&a=guardar">
+            <input type="hidden" name="id_tarea" value="<?= $tarea['id_tarea'] ?>">
+            <input type="hidden" name="id_usuario" value="<?= $_SESSION['usuario']['id_usuario'] ?>">
+            <textarea name="comentario" rows="2" placeholder="Escribe un comentario..." required></textarea>
+            <button type="submit">Agregar comentario</button>
+        </form>
     </div>
+</div>
+<?php endforeach; ?>
+</div>
 </div>
 
 <script>
-// Filtrar tarjetas por curso
+// Filtrar tareas por curso
 const botonesCurso = document.querySelectorAll('.scroll-cursos button');
 const tarjetas = document.querySelectorAll('.cards-container .card');
 
@@ -188,10 +224,18 @@ botonesCurso.forEach(btn => {
     });
 });
 
-// Mostrar inicialmente tareas del primer curso
-if (botonesCurso.length > 0) {
-    botonesCurso[0].click();
-}
+// Inicialmente mostrar tareas del primer curso
+if (botonesCurso.length > 0) botonesCurso[0].click();
+
+// Toggle comentarios
+const btnComentarios = document.querySelectorAll('.toggle-comentarios');
+btnComentarios.forEach(btn => {
+    btn.addEventListener('click', () => {
+        const tareaId = btn.getAttribute('data-tarea');
+        const div = document.getElementById('comentarios-' + tareaId);
+        div.style.display = div.style.display === 'block' ? 'none' : 'block';
+    });
+});
 </script>
 </body>
 </html>
