@@ -8,7 +8,7 @@ class MatriculaModelo {
         $this->db = new Conexion();
     }
 
-    // Obtener todas las matrículas con info de estudiante, curso, docente y año/semestre
+    // Obtener todas las matrículas con info de estudiante, curso, docente y año
     public function obtenerMatriculas() {
         $stmt = $this->db->conexion->prepare("
             SELECT m.id_matricula,
@@ -18,7 +18,6 @@ class MatriculaModelo {
                    d.nombres AS docente_nombres,
                    d.apellidos AS docente_apellidos,
                    cd.anio_academico,
-                   cd.semestre,
                    m.estado
             FROM matriculas m
             JOIN estudiantes e ON m.id_estudiante = e.id_estudiante
@@ -47,8 +46,7 @@ class MatriculaModelo {
                    ca.nombre_carrera,
                    d.nombres AS docente_nombres,
                    d.apellidos AS docente_apellidos,
-                   cd.anio_academico,
-                   cd.semestre
+                   cd.anio_academico
             FROM cursos_docentes cd
             JOIN cursos c ON cd.id_curso = c.id_curso
             JOIN carreras ca ON c.id_carrera = ca.id_carrera

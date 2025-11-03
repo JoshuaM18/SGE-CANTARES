@@ -15,7 +15,7 @@
             <option value="">-- Seleccionar Curso --</option>
             <?php foreach($cursos as $c): ?>
                 <option value="<?= $c['id_asignacion'] ?>">
-                    <?= htmlspecialchars($c['nombre_curso'] . " - " . $c['nombre_carrera'] . " (Año " . $c['anio_academico'] . ", Sem " . $c['semestre'] . ")") ?>
+                    <?= htmlspecialchars($c['nombre_curso'] . " - " . $c['nombre_carrera'] . " (Año " . $c['anio_academico'] . ")") ?>
                 </option>
             <?php endforeach; ?>
         </select>

@@ -56,19 +56,9 @@ if (session_status() === PHP_SESSION_NONE) {
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
-.card.pendiente {
-    border-top: 4px solid #140b46ff;
-}
-
-.card.parcial {
-    border-top: 4px solid #fff3cd;
-    background: #fffbea;
-}
-
-.card.calificada {
-    border-top: 4px solid #d4edda;
-    background: #e9f7ef;
-}
+.card.pendiente { border-top: 4px solid #140b46ff; }
+.card.parcial { border-top: 4px solid #fff3cd; background: #fffbea; }
+.card.calificada { border-top: 4px solid #d4edda; background: #e9f7ef; }
 
 .card h3 { margin-top: 0; }
 .card a {
@@ -135,12 +125,11 @@ foreach ($cursos_docente as $curso):
     <p class="estado">Calificadas: <?= $calificadas ?> | Pendientes: <?= $pendientes ?></p>
     
     <?php if ($_SESSION['usuario']['rol'] === 'Docente'): ?>
-        <a href="index.php?c=Tarea&a=calificar&id_tarea=<?= $t['id_tarea'] ?>&id_asignacion=<?= $curso['id_asignacion'] ?>">Calificar</a>
-    <?php else: ?>
+ <a href="index.php?c=Tarea&a=calificar&id_tarea=<?= $t['id_tarea'] ?>&id_asignacion=<?= $curso['id_asignacion'] ?>">Calificar</a>
+  <?php else: ?>
         <a href="index.php?c=Tarea&a=entregar&id_tarea=<?= $t['id_tarea'] ?>&id_asignacion=<?= $curso['id_asignacion'] ?>">Entregar</a>
     <?php endif; ?>
 
-    <!-- Enlace a comentarios -->
     <a href="index.php?c=Comentario&a=index&id_tarea=<?= $t['id_tarea'] ?>">Ver comentarios</a>
 </div>
 <?php

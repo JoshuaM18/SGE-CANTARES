@@ -6,8 +6,7 @@
     <select name="id_matricula" required>
         <?php foreach($matriculas as $m): ?>
             <option value="<?= $m['id_matricula'] ?>" <?= $m['id_matricula'] == $calificacion['id_matricula'] ? 'selected' : '' ?>>
-                <?= $m['nombres'].' '.$m['apellidos'] ?> - <?= $m['nombre_curso'] ?> - Año: <?= $m['anio_academico'] ?> - Semestre: <?= $m['semestre'] ?>
-            </option>
+                <?= $m['nombres'].' '.$m['apellidos'] ?> - <?= $m['nombre_curso'] ?> - Año: <?= $m['anio_academico'] ?> 
         <?php endforeach; ?>
     </select>
     <br><br>

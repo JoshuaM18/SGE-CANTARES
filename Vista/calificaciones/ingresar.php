@@ -10,10 +10,7 @@
         th { background-color: #f2f2f2; }
         input[type="number"] { width: 60px; }
         textarea { width: 100%; height: 40px; }
-        a { text-decoration: none; color: #007BFF; }
-        a:hover { text-decoration: underline; }
         button { padding: 5px 10px; margin-top: 10px; }
-        .info-curso { font-weight: bold; margin-bottom: 15px; }
     </style>
 </head>
 <body>
@@ -21,41 +18,55 @@
 
     <?php if(!empty($notas)): ?>
         <?php 
-            // Tomamos la información del primer registro para mostrar curso y semestre
             $curso_nombre = $notas[0]['nombre_curso'];
             $anio_academico = $notas[0]['anio_academico'];
-            $semestre = $notas[0]['semestre'];
-            // Si tienes carrera en el SP, también podrías mostrar $notas[0]['nombre_carrera']
         ?>
         <div class="info-curso">
-            Curso: <?= htmlspecialchars($curso_nombre) ?> - Año: <?= $anio_academico ?> - Semestre: <?= $semestre ?>
+            Curso: <?= htmlspecialchars($curso_nombre) ?> - Año: <?= $anio_academico ?>
         </div>
 
-        <form action="index.php?c=Calificacion&a=guardar" method="post">
+        <form action="index.php?c=Calificacion&a=guardarBimestre" method="post">
+            <label>Seleccione Bimestre:</label>
+            <select name="bimestre" required>
+                <option value="1">Bimestre 1</option>
+                <option value="2">Bimestre 2</option>
+                <option value="3">Bimestre 3</option>
+                <option value="4">Bimestre 4</option>
+            </select>
+
             <table>
                 <thead>
                     <tr>
                         <th>Estudiante</th>
-                        <th>Nota</th>
+                        <th>B1</th>
+                        <th>B2</th>
+                        <th>B3</th>
+                        <th>B4</th>
+                        <th>Promedio</th>
                         <th>Observaciones</th>
+                        <th>Nota a Ingresar</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach($notas as $n): ?>
                         <tr>
-                            <td><?= htmlspecialchars($n['estudiante_nombres'] . ' ' . $n['estudiante_apellidos']) ?></td>
+                            <td><?= htmlspecialchars($n['nombre_estudiante']) ?></td>
+                            <td><?= $n['nota_b1'] ?></td>
+                            <td><?= $n['nota_b2'] ?></td>
+                            <td><?= $n['nota_b3'] ?></td>
+                            <td><?= $n['nota_b4'] ?></td>
+                            <td><?= number_format($n['nota_final'], 2) ?></td>
+                            <td><?= htmlspecialchars($n['observaciones']) ?></td>
                             <td>
                                 <input type="hidden" name="id_matricula[]" value="<?= $n['id_matricula'] ?>">
-                                <input type="number" step="0.01" name="nota[]" value="<?= htmlspecialchars($n['nota']) ?>">
-                            </td>
-                            <td>
-                                <textarea name="observaciones[]"><?= htmlspecialchars($n['observaciones']) ?></textarea>
+                                <input type="number" step="0.01" name="nota[]" placeholder="Nueva nota">
+                                <input type="text" name="observaciones[]" placeholder="Observación">
                             </td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
             </table>
-            <input type="hidden" name="id_asignacion" value="<?= $id_asignacion ?>">
+
             <button type="submit">Guardar Notas</button>
         </form>
     <?php else: ?>

@@ -1,0 +1,128 @@
+/* Contenedor principal */
+.chat-container {
+    display: flex;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+}
+
+/* Panel izquierdo: lista de chats */
+.chat-sidebar {
+    width: 25%;
+    border-right: 1px solid #ccc;
+    overflow-y: auto;
+    padding: 10px;
+    background-color: #f7f7f7;
+}
+
+.chat-sidebar h2 {
+    margin-top: 0;
+    font-size: 18px;
+    text-align: center;
+    color: #333;
+}
+
+#listaChats {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.chat-item {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.chat-item:hover {
+    background-color: #e6e6e6;
+}
+
+.chat-item.selected {
+    background-color: #4CAF50;
+    color: white;
+}
+
+/* Panel derecho: conversación */
+.chat-main {
+    width: 75%;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+}
+
+#chatContenido {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    background-color: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Mensajes */
+.mensaje {
+    max-width: 60%;
+    margin: 5px 0;
+    padding: 10px;
+    border-radius: 15px;
+    word-wrap: break-word;
+    display: inline-block;
+}
+
+.enviado {
+    background-color: #4CAF50;
+    color: rgb(255, 255, 255);
+    align-self: flex-end;
+    border-bottom-right-radius: 0;
+}
+
+.recibido {
+    background-color: #f1f1f1;
+    color: #333;
+    align-self: flex-start;
+    border-bottom-left-radius: 0;
+}
+
+.mensaje-leido {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+/* Barra de texto y botón */
+.chat-input {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #ccc;
+    background-color: #fff;
+}
+
+.chat-input textarea {
+    flex: 1;
+    padding: 8px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    resize: none;
+    font-size: 14px;
+}
+
+.chat-input button {
+    padding: 8px 16px;
+    margin-left: 5px;
+    border: none;
+    border-radius: 20px;
+    background-color: #4CAF50;
+    color: rgb(18, 1, 40);
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.chat-input button:hover {
+    background-color: #45a049;
+}
+
+/* Mensajes scroll suave */
+#chatContenido {
+    scroll-behavior: smooth;
+}

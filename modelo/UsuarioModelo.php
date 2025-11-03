@@ -47,5 +47,12 @@ class UsuarioModelo {
         $stmt->execute([$nombre_usuario]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    public function obtenerUsuariosExcepto($id_actual) {
+    $stmt = $this->db->conexion->prepare("SELECT id_usuario, nombre_usuario, rol FROM usuarios WHERE id_usuario != ?");
+    $stmt->execute([$id_actual]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
 }
 ?>

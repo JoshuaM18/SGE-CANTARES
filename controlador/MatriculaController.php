@@ -27,13 +27,29 @@ class MatriculaController {
         header("Location: index.php?c=Matricula&a=index");
     }
 
-    // Formulario de edición de matrícula
-    public function editar($id) {
-        $matricula = $this->modelo->obtenerMatriculaPorId($id);
-        $estudiantes = $this->modelo->obtenerEstudiantes();
-        $cursos = $this->modelo->obtenerCursosParaMatricula(); // ahora trae carrera y docente
-        require __DIR__ . '/../vista/matriculas/editar.php';
+ // Formulario de edición de matrícula
+public function editar() {
+    $id = $_GET['id'] ?? null;
+
+    if (!$id) {
+        $_SESSION['error'] = "No se recibió ID de matrícula.";
+        header("Location: index.php?c=Matricula&a=index");
+        exit;
     }
+
+    $matricula = $this->modelo->obtenerMatriculaPorId($id);
+
+    if (!$matricula) {
+        $_SESSION['error'] = "No se encontró la matrícula con ID $id";
+        header("Location: index.php?c=Matricula&a=index");
+        exit;
+    }
+
+    $estudiantes = $this->modelo->obtenerEstudiantes();
+    $cursos = $this->modelo->obtenerCursosParaMatricula();
+
+    require __DIR__ . '/../vista/matriculas/editar.php';
+}
 
     // Actualizar matrícula
     public function actualizar($data) {

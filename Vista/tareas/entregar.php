@@ -14,7 +14,6 @@
         <strong>Curso:</strong> <?= htmlspecialchars($curso['nombre_curso']) ?><br>
         <strong>Carrera:</strong> <?= htmlspecialchars($curso['nombre_carrera']) ?><br>
         <strong>Año:</strong> <?= htmlspecialchars($curso['anio_academico']) ?><br>
-        <strong>Semestre:</strong> <?= htmlspecialchars($curso['semestre']) ?>
     </div>
 <?php endif; ?>
 

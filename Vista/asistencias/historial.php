@@ -33,8 +33,7 @@
         <strong>Curso:</strong> <?= htmlspecialchars($cursoSeleccionado['nombre_curso']) ?><br>
         <strong>Carrera:</strong> <?= htmlspecialchars($cursoSeleccionado['nombre_carrera']) ?><br>
         <strong>Año:</strong> <?= htmlspecialchars($cursoSeleccionado['anio_academico']) ?><br>
-        <strong>Semestre:</strong> <?= htmlspecialchars($cursoSeleccionado['semestre']) ?>
-    </div>
+          </div>
 <?php endif; ?>
 
 

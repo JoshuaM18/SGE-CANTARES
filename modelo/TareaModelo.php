@@ -38,8 +38,7 @@ class TareaModelo {
             SELECT t.*,
                    c.nombre_curso,
                    ca.nombre_carrera,
-                   cd.anio_academico,
-                   cd.semestre
+                   cd.anio_academico
             FROM tareas t
             JOIN cursos_docentes cd ON t.id_asignacion = cd.id_asignacion
             JOIN cursos c ON cd.id_curso = c.id_curso
@@ -70,8 +69,7 @@ class TareaModelo {
             SELECT cd.id_asignacion,
                    c.nombre_curso,
                    ca.nombre_carrera,
-                   cd.anio_academico,
-                   cd.semestre
+                   cd.anio_academico
             FROM cursos_docentes cd
             JOIN cursos c ON cd.id_curso = c.id_curso
             JOIN carreras ca ON c.id_carrera = ca.id_carrera
@@ -82,23 +80,21 @@ class TareaModelo {
     }
 
     // --- Obtener todos los cursos de un docente ---
-   public function obtenerCursosPorDocente($id_docente) {
-    $stmt = $this->db->conexion->prepare("
-        SELECT cd.id_asignacion,
-               c.id_carrera,  -- <-- Agregado
-               c.nombre_curso,
-               ca.nombre_carrera,
-               cd.anio_academico,
-               cd.semestre
-        FROM cursos_docentes cd
-        JOIN cursos c ON cd.id_curso = c.id_curso
-        JOIN carreras ca ON c.id_carrera = ca.id_carrera
-        WHERE cd.id_docente = ?
-    ");
-    $stmt->execute([$id_docente]);
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
-
+    public function obtenerCursosPorDocente($id_docente) {
+        $stmt = $this->db->conexion->prepare("
+            SELECT cd.id_asignacion,
+                   c.id_carrera,
+                   c.nombre_curso,
+                   ca.nombre_carrera,
+                   cd.anio_academico
+            FROM cursos_docentes cd
+            JOIN cursos c ON cd.id_curso = c.id_curso
+            JOIN carreras ca ON c.id_carrera = ca.id_carrera
+            WHERE cd.id_docente = ?
+        ");
+        $stmt->execute([$id_docente]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
     // --- Obtener id_docente desde id_usuario ---
     public function obtenerIdDocentePorUsuario($id_usuario) {
@@ -130,7 +126,6 @@ class TareaModelo {
                    c.nombre_curso,
                    ca.nombre_carrera,
                    cd.anio_academico,
-                   cd.semestre,
                    e.id_entrega,
                    e.calificacion
             FROM tareas t
@@ -173,8 +168,7 @@ class TareaModelo {
                    c.nombre_curso,
                    ca.nombre_carrera,
                    cd.id_asignacion,
-                   cd.anio_academico,
-                   cd.semestre
+                   cd.anio_academico
             FROM cursos c
             INNER JOIN cursos_docentes cd ON cd.id_curso = c.id_curso
             INNER JOIN matriculas m ON m.id_asignacion = cd.id_asignacion

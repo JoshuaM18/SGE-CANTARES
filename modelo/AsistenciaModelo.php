@@ -14,8 +14,7 @@ class AsistenciaModelo {
         SELECT cd.id_asignacion,
                c.nombre_curso,
                ca.nombre_carrera,
-               cd.anio_academico,
-               cd.semestre
+               cd.anio_academico
         FROM cursos_docentes cd
         JOIN cursos c ON cd.id_curso = c.id_curso
         JOIN carreras ca ON c.id_carrera = ca.id_carrera
@@ -70,8 +69,7 @@ public function obtenerCursoPorAsignacion($id_asignacion) {
         SELECT cd.id_asignacion,
                c.nombre_curso,
                ca.nombre_carrera,
-               cd.anio_academico,
-               cd.semestre
+               cd.anio_academico
         FROM cursos_docentes cd
         JOIN cursos c ON cd.id_curso = c.id_curso
         JOIN carreras ca ON c.id_carrera = ca.id_carrera

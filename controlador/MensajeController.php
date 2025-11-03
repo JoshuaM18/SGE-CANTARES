@@ -1,29 +1,52 @@
 <?php
-require_once "modelo/MensajeModelo.php";
+require_once __DIR__ . '/../modelo/MensajeModelo.php';
 
 class MensajeController {
     private $modelo;
 
-    public function __construct($conexion) {
-        $this->modelo = new MensajeModelo($conexion);
+    public function __construct() {
+        $this->modelo = new MensajeModelo();
     }
 
-    public function bandejaEntrada() {
-        $mensajes = $this->modelo->obtenerBandejaEntrada($_GET['id_usuario']);
-        require_once "vista/mensajes/bandeja_entrada.php";
+    // Bandeja de entrada (mensajes recibidos)
+    public function bandejaEntrada($id_usuario) {
+        $mensajes = $this->modelo->obtenerMensajesRecibidos($id_usuario);
+        require __DIR__ . '/../vista/mensajes/entrada.php';
     }
 
-    public function bandejaSalida() {
-        $mensajes = $this->modelo->obtenerBandejaSalida($_GET['id_usuario']);
-        require_once "vista/mensajes/bandeja_salida.php";
+    // Bandeja de enviados (mensajes enviados)
+    public function bandejaEnviados($id_usuario) {
+        $mensajes = $this->modelo->obtenerMensajesEnviados($id_usuario);
+        require __DIR__ . '/../vista/mensajes/enviados.php';
     }
 
-    public function nuevo() {
+    // Formulario para enviar mensaje
+ public function nuevo() {
+    require_once __DIR__ . '/../modelo/UsuarioModelo.php';
+    $usuarioModelo = new UsuarioModelo();
+    $usuarios = $usuarioModelo->obtenerUsuarios(); // Trae todos los usuarios
+    require __DIR__ . '/../vista/mensajes/nuevo.php';
+}
+
+
+
+
+    // Procesar envío de mensaje
+    public function enviar() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->modelo->enviarMensaje($_POST['id_remitente'], $_POST['id_destinatario'], $_POST['asunto'], $_POST['contenido']);
-            header("Location: index.php?c=Mensaje&a=bandejaSalida&id_usuario=" . $_POST['id_remitente']);
-        } else {
-            require_once "vista/mensajes/nuevo.php";
+            $id_remitente = $_POST['id_remitente'];
+            $id_destinatario = $_POST['id_destinatario'];
+            $asunto = $_POST['asunto'];
+            $contenido = $_POST['contenido'];
+
+            $resultado = $this->modelo->enviarMensaje($id_remitente, $id_destinatario, $asunto, $contenido);
+
+            if ($resultado) {
+                header("Location: index.php?c=Mensaje&a=bandejaEntrada&id_usuario=$id_remitente");
+                exit();
+            } else {
+                echo "<p>Error al enviar el mensaje. Inténtalo de nuevo.</p>";
+            }
         }
     }
 }

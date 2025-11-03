@@ -5,7 +5,7 @@
         <option value="">-- Selecciona una matrícula --</option>
         <?php foreach($matriculas as $m): ?>
             <option value="<?= $m['id_matricula'] ?>">
-                <?= $m['nombres'].' '.$m['apellidos'] ?> - <?= $m['nombre_curso'] ?> - Año: <?= $m['anio_academico'] ?> - Semestre: <?= $m['semestre'] ?>
+                <?= $m['nombres'].' '.$m['apellidos'] ?> - <?= $m['nombre_curso'] ?> - Año: <?= $m['anio_academico'] ?>
             </option>
         <?php endforeach; ?>
     </select>

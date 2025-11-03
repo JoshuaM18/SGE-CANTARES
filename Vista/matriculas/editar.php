@@ -1,4 +1,6 @@
 <h1>Editar Matrícula</h1>
+
+<?php if ($matricula && !empty($estudiantes) && !empty($cursos)): ?>
 <form action="index.php?c=Matricula&a=actualizar" method="POST">
     <input type="hidden" name="id_matricula" value="<?= $matricula['id_matricula'] ?>">
 
@@ -7,7 +9,7 @@
         <?php foreach($estudiantes as $e): ?>
             <option value="<?= $e['id_estudiante'] ?>" 
                 <?= $e['id_estudiante'] == $matricula['id_estudiante'] ? 'selected' : '' ?>>
-                <?= $e['nombres'].' '.$e['apellidos'] ?>
+                <?= htmlspecialchars($e['nombres'].' '.$e['apellidos']) ?>
             </option>
         <?php endforeach; ?>
     </select>
@@ -18,10 +20,9 @@
         <?php foreach($cursos as $c): ?>
             <option value="<?= $c['id_asignacion'] ?>" 
                 <?= $c['id_asignacion'] == $matricula['id_asignacion'] ? 'selected' : '' ?>>
-                <?= $c['nombre_curso'] ?> (<?= $c['nombre_carrera'] ?>) 
-                - Docente: <?= $c['docente_nombres'].' '.$c['docente_apellidos'] ?> 
-                - Año: <?= $c['anio_academico'] ?> 
-                - Semestre: <?= $c['semestre'] ?>
+                <?= htmlspecialchars($c['nombre_curso'] . ' (' . $c['nombre_carrera'] . ')') ?> 
+                - Docente: <?= htmlspecialchars($c['docente_nombres'].' '.$c['docente_apellidos']) ?> 
+                - Año: <?= $c['anio_academico'] ?>
             </option>
         <?php endforeach; ?>
     </select>
@@ -42,5 +43,9 @@
 
     <button type="submit">Actualizar Matrícula</button>
 </form>
+<?php else: ?>
+    <p>Error: No se pudo cargar la matrícula, estudiantes o cursos.</p>
+<?php endif; ?>
+
 <br>
 <a href="index.php?c=Matricula&a=index">Volver al listado</a>

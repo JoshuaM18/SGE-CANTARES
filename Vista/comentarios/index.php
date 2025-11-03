@@ -25,5 +25,3 @@
     <a href="index.php?c=Tarea&a=misTareas">Volver a tareas</a>
 <?php endif; ?>
 
-
-

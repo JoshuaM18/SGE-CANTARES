@@ -21,7 +21,6 @@
                 <tr>
                     <th>Curso</th>
                     <th>Año Académico</th>
-                    <th>Semestre</th>
                     <th>Acción</th>
                 </tr>
             </thead>
@@ -30,7 +29,6 @@
                     <tr>
                         <td><?= htmlspecialchars($curso['nombre_curso']) ?></td>
                         <td><?= htmlspecialchars($curso['anio_academico']) ?></td>
-                        <td><?= htmlspecialchars($curso['semestre']) ?></td>
                         <td>
                             <a href="index.php?c=Calificacion&a=ingresarNotas&id_asignacion=<?= $curso['id_asignacion'] ?>">Ingresar Notas</a>
                         </td>

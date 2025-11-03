@@ -50,19 +50,21 @@ class TareaController {
         require __DIR__ . '/../vista/tareas/crear.php';
     }
 
-    // --- Listar tareas de un curso (Docente) ---
+    // --- Listar tareas de todos los cursos del docente ---
     public function listar() {
         $id_asignacion = $_GET['id_asignacion'] ?? null;
 
-        // Para docentes, obtener todos los cursos asignados
-        $cursos_docente = [];
-        if ($_SESSION['usuario']['rol'] === 'Docente') {
-            $id_usuario = $_SESSION['usuario']['id_usuario'];
-            $id_docente = $this->modelo->obtenerIdDocentePorUsuario($id_usuario);
-            $cursos_docente = $this->modelo->obtenerCursosPorDocente($id_docente);
-            if (!$id_asignacion && !empty($cursos_docente)) {
-                $id_asignacion = $cursos_docente[0]['id_asignacion'];
-            }
+        if ($_SESSION['usuario']['rol'] !== 'Docente') {
+            echo "No tiene permisos para listar tareas.";
+            return;
+        }
+
+        $id_usuario = $_SESSION['usuario']['id_usuario'];
+        $id_docente = $this->modelo->obtenerIdDocentePorUsuario($id_usuario);
+        $cursos_docente = $this->modelo->obtenerCursosPorDocente($id_docente);
+
+        if (!$id_asignacion && !empty($cursos_docente)) {
+            $id_asignacion = $cursos_docente[0]['id_asignacion'];
         }
 
         if (!$id_asignacion) {
@@ -70,20 +72,26 @@ class TareaController {
             return;
         }
 
-        $tareas = $this->modelo->obtenerTareasPorAsignacion($id_asignacion);
-        $curso = $this->modelo->obtenerCursoPorAsignacion($id_asignacion);
-
-        // Conteo de entregas por tarea
-        foreach ($tareas as &$tarea) {
-            $conteo = $this->modelo->obtenerConteoEntregasPorTarea($tarea['id_tarea']);
-            $tarea['calificadas'] = (int)($conteo['calificadas'] ?? 0);
-            $tarea['pendientes'] = (int)($conteo['pendientes'] ?? 0);
+        // --- Obtener tareas por curso ---
+        $tareasPorCurso = [];
+        foreach ($cursos_docente as $curso) {
+            $tareas = $this->modelo->obtenerTareasPorAsignacion($curso['id_asignacion']);
+            foreach ($tareas as &$tarea) {
+                $conteo = $this->modelo->obtenerConteoEntregasPorTarea($tarea['id_tarea']);
+                $tarea['calificadas'] = (int)($conteo['calificadas'] ?? 0);
+                $tarea['pendientes'] = (int)($conteo['pendientes'] ?? 0);
+            }
+            $tareasPorCurso[$curso['id_asignacion']] = $tareas;
         }
 
-        // Cargar comentarios para cada tarea
+        $curso = $this->modelo->obtenerCursoPorAsignacion($id_asignacion);
+
+        // Obtener comentarios para cada tarea
         $comentarios_tareas = [];
-        foreach ($tareas as $tarea) {
-            $comentarios_tareas[$tarea['id_tarea']] = $this->modeloComentario->obtenerComentariosPorTarea($tarea['id_tarea']);
+        foreach ($tareasPorCurso as $listaTareas) {
+            foreach ($listaTareas as $tarea) {
+                $comentarios_tareas[$tarea['id_tarea']] = $this->modeloComentario->obtenerComentariosPorTarea($tarea['id_tarea']);
+            }
         }
 
         require __DIR__ . '/../vista/tareas/listar.php';
@@ -100,7 +108,6 @@ class TareaController {
         $cursos = $this->modelo->obtenerCursosPorEstudiante($id_estudiante);
         $tareas = $this->modelo->obtenerTareasConEstado($id_estudiante);
 
-        // Obtener comentarios por tarea
         $comentarios_tareas = [];
         foreach ($tareas as $tarea) {
             $comentarios_tareas[$tarea['id_tarea']] = $this->modeloComentario->obtenerComentariosPorTarea($tarea['id_tarea']);
@@ -139,37 +146,53 @@ class TareaController {
         require __DIR__ . '/../vista/tareas/entregar.php';
     }
 
-    // --- Calificar entrega (Docente) ---
     public function calificar() {
-        if ($_SESSION['usuario']['rol'] !== 'Docente') {
-            echo "No tiene permisos para calificar entregas.";
-            return;
-        }
+    if ($_SESSION['usuario']['rol'] !== 'Docente') {
+        echo "No tiene permisos para calificar entregas.";
+        return;
+    }
 
-        $id_tarea = $_GET['id_tarea'] ?? null;
-        $id_asignacion = $_GET['id_asignacion'] ?? null;
+    // Validar que lleguen los parámetros
+    $id_tarea = $_GET['id_tarea'] ?? null;
+    $id_asignacion = $_GET['id_asignacion'] ?? null;
 
-        if (!$id_tarea || !$id_asignacion) {
-            echo "Datos incompletos.";
-            return;
-        }
+    if (!$id_asignacion) {
+        die("No se proporcionó la asignación de la tarea.");
+    }
+    if (!$id_tarea) {
+        die("No se proporcionó la tarea. Seleccione una tarea de la lista para calificar.");
+    }
 
-        $curso = $this->modelo->obtenerCursoPorAsignacion($id_asignacion);
-        $entregas = $this->modelo->obtenerEntregasPorTarea($id_tarea);
-        $valor_tarea = $this->modelo->obtenerValorTarea($id_tarea);
+    $curso = $this->modelo->obtenerCursoPorAsignacion($id_asignacion);
+    if (!$curso) {
+        die("No se encontró el curso para esta asignación.");
+    }
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $entregas = $this->modelo->obtenerEntregasPorTarea($id_tarea);
+    $valor_tarea = $this->modelo->obtenerValorTarea($id_tarea);
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if (isset($_POST['id_entrega'], $_POST['calificacion'])) {
             $this->modelo->calificarEntrega(
                 $_POST['id_entrega'],
                 $_POST['calificacion'],
-                $_POST['observaciones']
+                $_POST['observaciones'] ?? ''
             );
             header("Location: index.php?c=Tarea&a=listar&id_asignacion=" . $_POST['id_asignacion']);
             exit;
+        } else {
+            echo "Error: datos de calificación incompletos.";
         }
-
-        require __DIR__ . '/../vista/tareas/calificar.php';
     }
+
+    // Mensaje si no hay entregas
+    if (empty($entregas)) {
+        $mensaje = "No hay entregas para esta tarea, o todas ya fueron calificadas.";
+    }
+
+    require __DIR__ . '/../vista/tareas/calificar.php';
+}
+
 
     // --- Ver detalle de entrega ---
     public function verEntrega() {
@@ -196,15 +219,14 @@ class TareaController {
         require __DIR__ . '/../vista/tareas/verEntrega.php';
     }
 
+    // --- Redirección según rol ---
     public function index() {
-    // Dependiendo del rol, redirige a listar o misTareas
-    if ($_SESSION['usuario']['rol'] === 'Docente') {
-        header("Location: index.php?c=Tarea&a=listar");
-    } else {
-        header("Location: index.php?c=Tarea&a=misTareas");
+        if ($_SESSION['usuario']['rol'] === 'Docente') {
+            header("Location: index.php?c=Tarea&a=listar");
+        } else {
+            header("Location: index.php?c=Tarea&a=misTareas");
+        }
+        exit;
     }
-    exit;
-}
-
 }
 ?>
