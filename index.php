@@ -125,6 +125,13 @@ if (isset($_SESSION['mensaje_login'])) {
     <!-- Mensajes -->
     <a href="index.php?c=Mensaje&a=bandejaEntrada&id_usuario=<?= $id_usuario ?>">📥 Mensajes</a>
 
+    <!-- Anuncios -->
+    <?php if ($rol === 'Docente'): ?>
+        <a href="index.php?c=Anuncio&a=index">📢 Anuncios</a>
+    <?php elseif ($rol === 'Estudiante'): ?>
+        <a href="index.php?c=Anuncio&a=verPorEstudiante">📢 Anuncios</a>
+    <?php endif; ?>
+
     <a href="index.php?c=Login&a=logout">Salir</a>
 </nav>
 
@@ -139,26 +146,25 @@ if ($controlador !== 'Login') {
 
         if (method_exists($controller, $accion)) {
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                // Para formularios
                 $controller->$accion($_POST);
             } else {
-                // Pasar parámetros según controlador
                 switch ($controlador) {
                     case 'Mensaje':
-                        // Bandeja de mensajes necesita id_usuario
                         $id_usuario_get = $_GET['id_usuario'] ?? $id_usuario;
                         $controller->$accion($id_usuario_get);
                         break;
+
                     case 'Tarea':
                         $id = $_GET['id'] ?? $_GET['id_asignacion'] ?? null;
                         $controller->$accion($id);
                         break;
+
                     case 'Calificacion':
                     case 'Asistencia':
-                        // id_asignacion desde GET
                         $id_asignacion = $_GET['id_asignacion'] ?? null;
                         $controller->$accion($id_asignacion);
                         break;
+
                     case 'Recurso':
                     case 'Estudiante':
                     case 'Usuario':
@@ -170,6 +176,22 @@ if ($controlador !== 'Login') {
                     case 'Matricula':
                         $controller->$accion();
                         break;
+
+                    case 'Anuncio':
+                        require_once __DIR__ . '/controlador/AnuncioController.php';
+                        $controller = new AnuncioController();
+                        if ($rol === 'Docente') {
+                            $accionDocente = $_GET['a'] ?? 'index';
+                            if (in_array($accionDocente, ['index','nuevo','guardar','archivar'])) {
+                                $controller->$accionDocente();
+                            } else {
+                                echo "<p>Acción '$accionDocente' no válida para docente.</p>";
+                            }
+                        } elseif ($rol === 'Estudiante') {
+                            $controller->verPorEstudiante();
+                        }
+                        break;
+
                     default:
                         $controller->$accion();
                         break;
