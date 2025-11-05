@@ -132,6 +132,11 @@ if (isset($_SESSION['mensaje_login'])) {
         <a href="index.php?c=Anuncio&a=verPorEstudiante">📢 Anuncios</a>
     <?php endif; ?>
 
+    <?php if ($rol === 'Administrador'): ?>
+    <a href="index.php?c=Reporte&a=index">📊 Reportes</a>
+    <?php endif; ?>
+
+
     <a href="index.php?c=Login&a=logout">Salir</a>
 </nav>
 
