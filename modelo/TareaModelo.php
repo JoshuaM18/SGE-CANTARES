@@ -17,7 +17,11 @@ class TareaModelo {
     // --- Insertar tarea con valor ---
     public function insertarTarea($id_asignacion, $titulo, $descripcion, $fecha_entrega, $valor_tarea) {
         $stmt = $this->db->conexion->prepare("CALL sp_insertar_tarea(?, ?, ?, ?, ?)");
-        return $stmt->execute([$id_asignacion, $titulo, $descripcion, $fecha_entrega, $valor_tarea]);
+        $stmt->execute([$id_asignacion, $titulo, $descripcion, $fecha_entrega, $valor_tarea]);
+        // Retornar el último id insertado
+        $stmt2 = $this->db->conexion->query("SELECT LAST_INSERT_ID() as id_tarea");
+        $result = $stmt2->fetch(PDO::FETCH_ASSOC);
+        return $result['id_tarea'] ?? null;
     }
 
     // --- Registrar entrega de tarea ---
@@ -67,6 +71,7 @@ class TareaModelo {
     public function obtenerCursoPorAsignacion($id_asignacion) {
         $stmt = $this->db->conexion->prepare("
             SELECT cd.id_asignacion,
+                   c.id_curso,
                    c.nombre_curso,
                    ca.nombre_carrera,
                    cd.anio_academico
@@ -83,7 +88,8 @@ class TareaModelo {
     public function obtenerCursosPorDocente($id_docente) {
         $stmt = $this->db->conexion->prepare("
             SELECT cd.id_asignacion,
-                   c.id_carrera,
+                   c.id_curso,
+                   c.id_carrera,        
                    c.nombre_curso,
                    ca.nombre_carrera,
                    cd.anio_academico
@@ -125,6 +131,7 @@ class TareaModelo {
                    cd.id_curso,
                    c.nombre_curso,
                    ca.nombre_carrera,
+                   cd.id_asignacion,
                    cd.anio_academico,
                    e.id_entrega,
                    e.calificacion
@@ -184,7 +191,71 @@ class TareaModelo {
     public function obtenerValorTarea($id_tarea) {
         $stmt = $this->db->conexion->prepare("SELECT valor_tarea FROM tareas WHERE id_tarea = ?");
         $stmt->execute([$id_tarea]);
-        return $stmt->fetchColumn(); // Devuelve el valor de la tarea
+        return $stmt->fetchColumn();
+    }
+
+    // --- Obtener id_curso por id_asignacion ---
+    public function obtenerIdCursoPorAsignacion($id_asignacion) {
+        $stmt = $this->db->conexion->prepare("
+            SELECT id_curso 
+            FROM cursos_docentes 
+            WHERE id_asignacion = ? 
+            LIMIT 1
+        ");
+        $stmt->execute([$id_asignacion]);
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $resultado['id_curso'] ?? null;
+    }
+
+    // --- Obtener id_estudiante desde id_entrega ---
+    public function obtenerIdEstudiantePorEntrega($id_entrega) {
+        $stmt = $this->db->conexion->prepare("
+            SELECT id_estudiante 
+            FROM entregas_tareas 
+            WHERE id_entrega = ? 
+            LIMIT 1
+        ");
+        $stmt->execute([$id_entrega]);
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $resultado['id_estudiante'] ?? null;
+    }
+
+    // --- Obtener nombre de la tarea ---
+    public function obtenerNombreTarea($id_tarea) {
+        $stmt = $this->db->conexion->prepare("SELECT titulo FROM tareas WHERE id_tarea = ?");
+        $stmt->execute([$id_tarea]);
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $resultado['titulo'] ?? '';
+    }
+
+   // --- Obtener información de la entrega para notificación ---
+public function obtenerInfoEntrega($id_tarea, $id_estudiante) {
+    $stmt = $this->db->conexion->prepare("
+        SELECT 
+            CONCAT(est.nombres, ' ', est.apellidos) AS nombre_estudiante,
+            c.nombre_curso,
+            ca.nombre_carrera,
+            cd.id_docente
+        FROM entregas_tareas e
+        JOIN estudiantes est ON e.id_estudiante = est.id_estudiante
+        JOIN tareas t ON e.id_tarea = t.id_tarea
+        JOIN cursos_docentes cd ON t.id_asignacion = cd.id_asignacion
+        JOIN cursos c ON cd.id_curso = c.id_curso
+        JOIN carreras ca ON c.id_carrera = ca.id_carrera
+        WHERE e.id_tarea = ? AND e.id_estudiante = ?
+        LIMIT 1
+    ");
+    $stmt->execute([$id_tarea, $id_estudiante]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+
+
+    // --- Obtener id_usuario del docente ---
+    public function obtenerIdUsuarioDocente($id_docente) {
+        $stmt = $this->db->conexion->prepare("SELECT id_usuario FROM docentes WHERE id_docente = ?");
+        $stmt->execute([$id_docente]);
+        return $stmt->fetchColumn();
     }
 }
 ?>

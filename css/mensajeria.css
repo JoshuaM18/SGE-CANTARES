@@ -1,0 +1,638 @@
+/* ========================================
+   VARIABLES Y CONFIGURACIÓN BASE
+   ======================================== */
+:root {
+    --rojo-principal: #E63946;
+    --azul-marino: #1D3557;
+    --azul-claro: #457B9D;
+    --amarillo: #F1C40F;
+    --verde: #4CAF50;
+    --blanco: #FFFFFF;
+    --gris-claro: #F8F9FA;
+    --gris-medio: #E9ECEF;
+    --sombra: rgba(29, 53, 87, 0.15);
+    --sombra-intensa: rgba(29, 53, 87, 0.3);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    padding: 2rem;
+    min-height: 100vh;
+}
+
+/* ========================================
+   TÍTULOS
+   ======================================== */
+h1, h2 {
+    color: var(--azul-marino);
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
+
+h1 {
+    font-size: 2.2rem;
+    padding-bottom: 1rem;
+    border-bottom: 4px solid var(--amarillo);
+    animation: slideInDown 0.6s ease-out;
+}
+
+h2 {
+    font-size: 1.5rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 3px solid var(--azul-claro);
+}
+
+h2::before {
+    content: '💬 ';
+    font-size: 1.3rem;
+    margin-right: 0.5rem;
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ========================================
+   CONTENEDOR PRINCIPAL DE CHAT
+   ======================================== */
+.chat-container {
+    display: flex;
+    max-width: 1100px;
+    margin: 2rem auto;
+    background: var(--blanco);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px var(--sombra-intensa);
+    animation: scaleIn 0.6s ease-out;
+    border-top: 5px solid var(--amarillo);
+    min-height: 600px;
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* ========================================
+   SIDEBAR - LISTA DE CONVERSACIONES
+   ======================================== */
+.chat-sidebar {
+    width: 35%;
+    background: linear-gradient(180deg, var(--gris-claro), var(--blanco));
+    border-right: 3px solid var(--gris-medio);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Lista de chats */
+#listaChats {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow-y: auto;
+    flex: 1;
+    margin-bottom: 1rem;
+}
+
+#listaChats::-webkit-scrollbar {
+    width: 8px;
+}
+
+#listaChats::-webkit-scrollbar-track {
+    background: var(--gris-claro);
+    border-radius: 10px;
+}
+
+#listaChats::-webkit-scrollbar-thumb {
+    background: var(--azul-claro);
+    border-radius: 10px;
+}
+
+#listaChats::-webkit-scrollbar-thumb:hover {
+    background: var(--azul-marino);
+}
+
+/* Items de chat/conversación */
+.chat-item {
+    cursor: pointer;
+    padding: 1rem;
+    border-bottom: 2px solid var(--gris-medio);
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    background: var(--blanco);
+    animation: fadeInLeft 0.5s ease-out backwards;
+}
+
+.chat-item:hover {
+    background: rgba(241, 196, 15, 0.1);
+    transform: translateX(5px);
+    border-left: 4px solid var(--amarillo);
+    padding-left: 1.5rem;
+}
+
+.chat-item.selected {
+    background: linear-gradient(135deg, rgba(69, 123, 157, 0.15), rgba(241, 196, 15, 0.15));
+    border-left: 4px solid var(--azul-claro);
+    padding-left: 1.5rem;
+}
+
+.chat-item strong {
+    color: var(--azul-marino);
+    font-size: 1rem;
+    display: block;
+    margin-bottom: 0.3rem;
+}
+
+.chat-item small {
+    color: #6C757D;
+    font-size: 0.85rem;
+    display: block;
+    margin-top: 0.2rem;
+}
+
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Retrasos para animación escalonada */
+.chat-item:nth-child(1) { animation-delay: 0.1s; }
+.chat-item:nth-child(2) { animation-delay: 0.15s; }
+.chat-item:nth-child(3) { animation-delay: 0.2s; }
+.chat-item:nth-child(4) { animation-delay: 0.25s; }
+.chat-item:nth-child(5) { animation-delay: 0.3s; }
+
+/* ========================================
+   ÁREA PRINCIPAL DE CHAT
+   ======================================== */
+.chat-main {
+    flex: 1;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    background: var(--blanco);
+}
+
+/* Contenedor de mensajes */
+#chatContenido,
+.chat-content {
+    flex: 1;
+    overflow-y: auto;
+    border: 2px solid var(--gris-medio);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, rgba(248, 249, 250, 0.5), var(--blanco));
+    min-height: 400px;
+    max-height: 450px;
+}
+
+#chatContenido::-webkit-scrollbar,
+.chat-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+#chatContenido::-webkit-scrollbar-track,
+.chat-content::-webkit-scrollbar-track {
+    background: var(--gris-claro);
+    border-radius: 10px;
+}
+
+#chatContenido::-webkit-scrollbar-thumb,
+.chat-content::-webkit-scrollbar-thumb {
+    background: var(--amarillo);
+    border-radius: 10px;
+}
+
+#chatContenido::-webkit-scrollbar-thumb:hover,
+.chat-content::-webkit-scrollbar-thumb:hover {
+    background: #e5b008;
+}
+
+/* Mensaje de placeholder */
+.text-muted {
+    text-align: center;
+    color: #6C757D;
+    font-style: italic;
+    padding: 2rem;
+}
+
+/* Mensajes individuales */
+.mensaje {
+    padding: 1rem;
+    margin: 0.8rem 0;
+    border-radius: 12px;
+    max-width: 70%;
+    word-wrap: break-word;
+    animation: messageIn 0.4s ease-out;
+}
+
+@keyframes messageIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.mensaje.enviado {
+    background: linear-gradient(135deg, #d1ffd1, #a8e6a8);
+    margin-left: auto;
+    text-align: right;
+    border-bottom-right-radius: 4px;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+}
+
+.mensaje.recibido {
+    background: linear-gradient(135deg, var(--gris-claro), #e0e0e0);
+    margin-right: auto;
+    text-align: left;
+    border-bottom-left-radius: 4px;
+    box-shadow: 0 2px 8px var(--sombra);
+}
+
+/* ========================================
+   ÁREA DE ENTRADA DE MENSAJE
+   ======================================== */
+.chat-input {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-end;
+}
+
+.chat-input textarea {
+    flex: 1;
+    resize: none;
+    padding: 1rem;
+    border: 2px solid var(--gris-medio);
+    border-radius: 12px;
+    font-size: 1rem;
+    font-family: inherit;
+    color: var(--azul-marino);
+    background: var(--gris-claro);
+    transition: all 0.3s ease;
+    min-height: 60px;
+    max-height: 120px;
+}
+
+.chat-input textarea:focus {
+    outline: none;
+    border-color: var(--amarillo);
+    background: var(--blanco);
+    box-shadow: 0 0 0 4px rgba(241, 196, 15, 0.1);
+}
+
+.chat-input button,
+#btnEnviar {
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, var(--verde), #45a049);
+    color: var(--blanco);
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+}
+
+.chat-input button:hover,
+#btnEnviar:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+    background: linear-gradient(135deg, #45a049, var(--verde));
+}
+
+.chat-input button:active,
+#btnEnviar:active {
+    transform: translateY(-1px);
+}
+
+/* ========================================
+   BOTÓN NUEVO MENSAJE
+   ======================================== */
+.btn-nuevo,
+#btnNuevo {
+    display: block;
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, var(--amarillo), #e5b008);
+    color: var(--azul-marino);
+    text-decoration: none;
+    text-align: center;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(241, 196, 15, 0.3);
+    margin-bottom: 1rem;
+}
+
+.btn-nuevo::before,
+#btnNuevo::before {
+    content: '📤 ';
+    font-size: 1.2rem;
+}
+
+.btn-nuevo:hover,
+#btnNuevo:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(241, 196, 15, 0.4);
+    background: linear-gradient(135deg, #e5b008, var(--amarillo));
+}
+
+/* ========================================
+   FORMULARIO NUEVO MENSAJE
+   ======================================== */
+.nuevo-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    background: var(--blanco);
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: 0 8px 30px var(--sombra-intensa);
+    animation: scaleIn 0.6s ease-out;
+    border-top: 5px solid var(--amarillo);
+}
+
+.nuevo-container h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.nuevo-container label {
+    display: block;
+    color: var(--azul-marino);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    margin-top: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.nuevo-container label:first-of-type {
+    margin-top: 0;
+}
+
+/* Iconos en labels */
+.nuevo-container label[for="id_destinatario"]::before {
+    content: '👤 ';
+}
+
+.nuevo-container label[for="asunto"]::before {
+    content: '📋 ';
+}
+
+.nuevo-container label[for="contenido"]::before {
+    content: '✉️ ';
+}
+
+.nuevo-container input,
+.nuevo-container select,
+.nuevo-container textarea {
+    width: 100%;
+    padding: 0.9rem 1.2rem;
+    border: 2px solid var(--gris-medio);
+    border-radius: 10px;
+    font-size: 1rem;
+    font-family: inherit;
+    color: var(--azul-marino);
+    background: var(--gris-claro);
+    transition: all 0.3s ease;
+}
+
+.nuevo-container select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%231D3557' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    padding-right: 3rem;
+}
+
+.nuevo-container textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.nuevo-container input:focus,
+.nuevo-container select:focus,
+.nuevo-container textarea:focus {
+    outline: none;
+    border-color: var(--amarillo);
+    background: var(--blanco);
+    box-shadow: 0 0 0 4px rgba(241, 196, 15, 0.1);
+    transform: translateY(-2px);
+}
+
+.nuevo-container input:hover,
+.nuevo-container select:hover,
+.nuevo-container textarea:hover {
+    border-color: var(--amarillo);
+}
+
+/* ========================================
+   BOTONES DEL FORMULARIO
+   ======================================== */
+.btn-enviar {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, var(--verde), #45a049);
+    color: var(--blanco);
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1.5rem;
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.3);
+}
+
+.btn-enviar:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(76, 175, 80, 0.4);
+}
+
+.btn-enviar:active {
+    transform: translateY(-1px);
+}
+
+/* Botón regresar */
+.btn-regresar {
+    display: inline-block;
+    padding: 0.8rem 1.5rem;
+    background: linear-gradient(135deg, var(--azul-claro), #3a6785);
+    color: var(--blanco);
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 15px rgba(69, 123, 157, 0.3);
+}
+
+.btn-regresar::before {
+    content: '← ';
+    font-weight: 700;
+}
+
+.btn-regresar:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(69, 123, 157, 0.4);
+    background: linear-gradient(135deg, #3a6785, var(--azul-claro));
+}
+
+/* ========================================
+   MENSAJES DE RESULTADO
+   ======================================== */
+#resultadoEnvio {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    border-radius: 10px;
+    font-weight: 600;
+    text-align: center;
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.exito {
+    color: var(--verde);
+    background: rgba(76, 175, 80, 0.1);
+    border: 2px solid var(--verde);
+}
+
+.error {
+    color: var(--rojo-principal);
+    background: rgba(230, 57, 70, 0.1);
+    border: 2px solid var(--rojo-principal);
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+@media (max-width: 768px) {
+    body {
+        padding: 1rem;
+    }
+
+    .chat-container {
+        flex-direction: column;
+        max-width: 100%;
+    }
+
+    .chat-sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 3px solid var(--gris-medio);
+        max-height: 300px;
+    }
+
+    .chat-main {
+        width: 100%;
+    }
+
+    #chatContenido,
+    .chat-content {
+        min-height: 300px;
+        max-height: 350px;
+    }
+
+    .nuevo-container {
+        padding: 2rem 1.5rem;
+    }
+
+    .mensaje {
+        max-width: 85%;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.8rem;
+    }
+
+    h2 {
+        font-size: 1.3rem;
+    }
+
+    .nuevo-container {
+        padding: 1.5rem 1rem;
+    }
+
+    .chat-input {
+        flex-direction: column;
+    }
+
+    .chat-input button,
+    #btnEnviar {
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+
+    .mensaje {
+        max-width: 90%;
+        padding: 0.8rem;
+    }
+
+    .btn-nuevo,
+    #btnNuevo {
+        font-size: 0.9rem;
+        padding: 0.8rem;
+    }
+}
+
+/* ========================================
+   UTILIDADES
+   ======================================== */
+input[type="hidden"] {
+    display: none;
+}
+
+br {
+    display: block;
+    content: "";
+    margin: 0.5rem 0;
+}

@@ -1,3 +1,6 @@
+<head>
+    <link rel="stylesheet" href="css/calificaciones.css">
+</head>
 <h1>Editar Calificación</h1>
 <form action="index.php?c=Calificacion&a=actualizar" method="POST">
     <input type="hidden" name="id_calificacion" value="<?= $calificacion['id_calificacion'] ?>">

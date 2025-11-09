@@ -1,3 +1,6 @@
+<head>
+    <link rel="stylesheet" href="css/matriculas.css">
+</head>
 <h1>Editar Matrícula</h1>
 
 <?php if ($matricula && !empty($estudiantes) && !empty($cursos)): ?>

@@ -1,3 +1,7 @@
+<head>
+    <link rel="stylesheet" href="css/anuncio.css">
+</head>
+
 <?php
 // Variables disponibles: $cursos, $id_curso, $anuncios, $anunciosGenerales
 

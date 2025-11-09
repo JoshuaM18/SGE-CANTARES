@@ -1,3 +1,6 @@
+<head>
+    <link rel="stylesheet" href="css/calificaciones.css">
+</head>
 <h1>Notas del Estudiante</h1>
 <table border="1" cellpadding="5" cellspacing="0">
     <tr>

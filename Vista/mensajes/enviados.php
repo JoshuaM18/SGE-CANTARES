@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Mensajes Enviados</title>
-    <link rel="stylesheet" href="css/mensajes.css">
+    <link rel="stylesheet" href="css/mensajeria.css">
 </head>
 <body>
 <div class="chat-container">

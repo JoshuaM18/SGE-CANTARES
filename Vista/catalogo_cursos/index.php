@@ -2,7 +2,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Catálogo de Cursos</title>
+ <link rel="stylesheet" href="css/catalogo.css">    
+<title>Catálogo de Cursos</title>
+
 </head>
 <body>
     <h1>Catálogo de Cursos</h1>

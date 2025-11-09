@@ -12,27 +12,9 @@ $usuarios = $usuarioModelo->obtenerUsuariosExcepto($id_usuario); // Trae todos m
 <!DOCTYPE html>
 <html lang="es">
 <head>
+<link rel="stylesheet" href="css/mensajeria.css">
 <meta charset="UTF-8">
 <title>Nuevo Mensaje</title>
-<link rel="stylesheet" href="css/mensajes.css">
-<style>
-.nuevo-container { max-width: 500px; margin: 20px auto; border: 1px solid #ccc; padding: 20px; }
-label { display: block; margin-top: 10px; }
-input, select, textarea, button { width: 100%; padding: 5px; margin-top: 5px; }
-.btn-enviar { background: #4CAF50; color: #fff; border: none; cursor: pointer; margin-top: 10px; }
-.exito { color: green; }
-.error { color: red; }
-/* Botón de regreso */
-.btn-regresar { 
-    display: inline-block; 
-    background: #2196F3; 
-    color: #fff; 
-    text-decoration: none; 
-    padding: 5px 10px; 
-    margin-bottom: 15px; 
-    border-radius: 4px; 
-}
-</style>
 </head>
 <body>
 

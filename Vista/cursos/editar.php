@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Editar Curso</title>
+     <link rel="stylesheet" href="css/cursos.css">
 </head>
 <body>
     <h1>Editar Curso</h1>

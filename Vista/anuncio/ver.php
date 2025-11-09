@@ -1,3 +1,7 @@
+<head>
+    <link rel="stylesheet" href="css/anuncio.css">
+</head>
+
 <?php
 // Variable disponible: $anuncio
 ?>

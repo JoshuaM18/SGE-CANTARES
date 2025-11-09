@@ -1,3 +1,6 @@
+<head>
+     <link rel="stylesheet" href="css/cdocente.css">
+</head>
 <h1>Editar Asignación de Docente a Curso</h1>
 <form action="index.php?c=CursoDocente&a=actualizar" method="POST">
     <input type="hidden" name="id_asignacion" value="<?= $asignacion['id_asignacion'] ?>">
@@ -22,12 +25,6 @@
 
     <label>Año Académico:</label>
     <input type="number" name="anio_academico" min="2000" max="2100" value="<?= $asignacion['anio_academico'] ?>" required><br><br>
-
-    <label>Semestre:</label>
-    <select name="semestre" required>
-        <option value="1" <?= $asignacion['semestre']=='1' ? 'selected' : '' ?>>1</option>
-        <option value="2" <?= $asignacion['semestre']=='2' ? 'selected' : '' ?>>2</option>
-    </select><br><br>
 
     <button type="submit">Actualizar</button>
 </form>

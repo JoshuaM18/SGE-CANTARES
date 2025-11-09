@@ -76,4 +76,4 @@ class EstudianteModelo {
         return $stmt->execute([$id_estudiante]);
     }
 }
-?>
+

@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Listado de Padres</title>
+    <link rel="stylesheet" href="css/padres.css">
 </head>
 <body>
     <h1>Listado de Padres</h1>

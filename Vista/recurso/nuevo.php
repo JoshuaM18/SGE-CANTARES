@@ -1,3 +1,6 @@
+<head>
+    <link rel="stylesheet" href="css/recurso.css">
+</head>
 <h2>Agregar Material Didáctico</h2>
 
 <?php if (isset($mensaje)) : ?>
@@ -23,38 +26,3 @@
         <a href="index.php?c=Recurso&a=index">Cancelar</a>
     </div>
 </form>
-
-<style>
-form {
-    max-width: 500px;
-    margin-top: 20px;
-}
-
-form div {
-    margin-bottom: 15px;
-}
-
-label {
-    display: block;
-    margin-bottom: 5px;
-}
-
-input[type="text"], input[type="url"] {
-    width: 100%;
-    padding: 8px;
-    box-sizing: border-box;
-}
-
-button {
-    padding: 8px 15px;
-    cursor: pointer;
-}
-
-.mensaje-exito {
-    background-color: #d4edda;
-    color: #155724;
-    padding: 10px;
-    border-radius: 4px;
-    margin-bottom: 15px;
-}
-</style>

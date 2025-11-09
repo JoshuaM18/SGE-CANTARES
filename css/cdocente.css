@@ -1,0 +1,456 @@
+/* ========================================
+   VARIABLES Y CONFIGURACIÓN BASE
+   ======================================== */
+:root {
+    --rojo-principal: #E63946;
+    --azul-marino: #1D3557;
+    --azul-claro: #457B9D;
+    --amarillo: #F1C40F;
+    --blanco: #FFFFFF;
+    --gris-claro: #F8F9FA;
+    --gris-medio: #E9ECEF;
+    --verde-exito: #28A745;
+    --naranja-warning: #FD7E14;
+    --sombra: rgba(29, 53, 87, 0.1);
+    --sombra-hover: rgba(29, 53, 87, 0.15);
+}
+
+/* ========================================
+   TÍTULOS PRINCIPALES
+   ======================================== */
+h1 {
+    color: var(--azul-marino);
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 4px solid var(--azul-claro);
+    position: relative;
+    animation: slideInDown 0.6s ease-out;
+}
+
+h1::before {
+    content: '📚 ';
+    font-size: 2rem;
+    margin-right: 0.5rem;
+}
+
+h1::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 150px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--azul-claro), var(--amarillo));
+    animation: expandWidth 0.8s ease-out 0.3s backwards;
+}
+
+/* ========================================
+   TÍTULOS DE CARRERA (H2) - COLAPSABLES
+   ======================================== */
+h2 {
+    color: var(--blanco);
+    background: linear-gradient(135deg, var(--azul-marino), var(--azul-claro));
+    padding: 1.2rem 1.5rem;
+    border-radius: 12px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 1.5rem 0 1rem 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px var(--sombra);
+    position: relative;
+    overflow: hidden;
+}
+
+h2::before {
+    content: '🎓 ';
+    margin-right: 0.8rem;
+    font-size: 1.4rem;
+}
+
+h2::after {
+    content: '▼';
+    position: absolute;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: transform 0.3s ease;
+    font-size: 1rem;
+}
+
+h2:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(69, 123, 157, 0.4);
+    background: linear-gradient(135deg, var(--azul-claro), var(--azul-marino));
+}
+
+/* ========================================
+   TÍTULOS DE GRADO (H3) - COLAPSABLES
+   ======================================== */
+h3 {
+    color: var(--azul-marino);
+    background: var(--gris-claro);
+    padding: 0.9rem 1.2rem;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 1rem 0 0.8rem 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-left: 5px solid var(--azul-claro);
+}
+
+h3::before {
+    content: '📖 ';
+    margin-right: 0.5rem;
+}
+
+h3::after {
+    content: '▼';
+    float: right;
+    transition: transform 0.3s ease;
+    font-size: 0.9rem;
+    color: var(--azul-claro);
+}
+
+h3:hover {
+    background: var(--gris-medio);
+    border-left-color: var(--amarillo);
+}
+
+/* ========================================
+   BOTONES Y ENLACES PRINCIPALES
+   ======================================== */
+a[href*="nuevo"],
+a[href*="Nueva"] {
+    display: inline-block;
+    padding: 0.9rem 2rem;
+    background: linear-gradient(135deg, var(--verde-exito), #1e7e34);
+    color: var(--blanco);
+    text-decoration: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+    margin-bottom: 2rem;
+    animation: fadeInUp 0.6s ease-out 0.2s backwards;
+}
+
+a[href*="nuevo"]::before {
+    content: '+ ';
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+a[href*="nuevo"]:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+    background: linear-gradient(135deg, #1e7e34, var(--verde-exito));
+}
+
+/* Botón volver */
+a[href*="index"],
+a[href*="Volver"] {
+    display: inline-block;
+    padding: 0.8rem 1.5rem;
+    background: var(--gris-claro);
+    color: var(--azul-marino);
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: 2px solid var(--gris-medio);
+    margin-top: 1.5rem;
+}
+
+a[href*="index"]:hover {
+    background: var(--gris-medio);
+    border-color: var(--azul-claro);
+    transform: translateY(-2px);
+}
+
+/* ========================================
+   TABLAS DE ASIGNACIONES
+   ======================================== */
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: var(--blanco);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px var(--sombra);
+    margin-bottom: 2rem;
+    animation: fadeIn 0.5s ease-out;
+}
+
+table th {
+    background: linear-gradient(135deg, var(--azul-claro), var(--azul-marino));
+    color: var(--blanco);
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 3px solid var(--amarillo);
+}
+
+table tr {
+    transition: all 0.3s ease;
+}
+
+table tr:nth-child(even) {
+    background: var(--gris-claro);
+}
+
+table tr:hover {
+    background: rgba(69, 123, 157, 0.08);
+    transform: scale(1.01);
+    box-shadow: 0 2px 8px var(--sombra);
+}
+
+table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--gris-medio);
+    color: var(--azul-marino);
+    font-size: 0.95rem;
+}
+
+table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Enlaces de acción */
+table a[href*="editar"] {
+    color: var(--azul-claro);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+table a[href*="editar"]:hover {
+    background: var(--azul-claro);
+    color: var(--blanco);
+}
+
+table a[href*="eliminar"] {
+    color: var(--rojo-principal);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+table a[href*="eliminar"]:hover {
+    background: var(--rojo-principal);
+    color: var(--blanco);
+}
+
+/* ========================================
+   FORMULARIOS
+   ======================================== */
+form {
+    background: var(--blanco);
+    padding: 2.5rem;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px var(--sombra);
+    max-width: 900px;
+    margin: 0 auto;
+    animation: scaleIn 0.6s ease-out;
+    border-top: 5px solid var(--azul-claro);
+}
+
+form label {
+    display: block;
+    color: var(--azul-marino);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    margin-top: 1rem;
+    font-size: 0.95rem;
+}
+
+form label::before {
+    content: '👤 ';
+}
+
+form select,
+form input[type="number"] {
+    width: 100%;
+    padding: 0.9rem 1.2rem;
+    border: 2px solid var(--gris-medio);
+    border-radius: 10px;
+    font-size: 1rem;
+    color: var(--azul-marino);
+    transition: all 0.3s ease;
+    background: var(--gris-claro);
+}
+
+form select:focus,
+form input[type="number"]:focus {
+    outline: none;
+    border-color: var(--azul-claro);
+    background: var(--blanco);
+    box-shadow: 0 0 0 4px rgba(69, 123, 157, 0.1);
+}
+
+form select {
+    cursor: pointer;
+}
+
+/* Botón submit */
+button[type="submit"] {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, var(--azul-claro), #2c5f7f);
+    color: var(--blanco);
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1.5rem;
+    box-shadow: 0 6px 20px rgba(69, 123, 157, 0.3);
+}
+
+button[type="submit"]:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(69, 123, 157, 0.4);
+}
+
+/* ========================================
+   CHECKBOXES PARA CURSOS (nuevo.php)
+   ======================================== */
+form div[style*="margin-left"] > div {
+    padding: 0.6rem 0.8rem;
+    margin: 0.3rem 0;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    background: var(--gris-claro);
+    border: 2px solid transparent;
+}
+
+form div[style*="margin-left"] > div:hover {
+    background: var(--blanco);
+    border-color: var(--azul-claro);
+}
+
+form input[type="checkbox"] {
+    margin-right: 0.8rem;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--azul-claro);
+}
+
+/* Contenedores de agrupación */
+form > div[style*="margin-bottom"] {
+    background: var(--gris-claro);
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+}
+
+form > div[style*="margin-bottom"] > div[style*="margin-left"] {
+    padding: 1rem;
+    background: var(--blanco);
+    border-radius: 8px;
+    margin-top: 0.8rem;
+}
+
+/* ========================================
+   MENSAJE DE NO HAY ASIGNACIONES
+   ======================================== */
+p {
+    background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+    color: #856404;
+    padding: 1.2rem 1.5rem;
+    border-radius: 10px;
+    border-left: 5px solid var(--amarillo);
+    font-weight: 600;
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* ========================================
+   ANIMACIONES
+   ======================================== */
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes expandWidth {
+    from { width: 0; }
+    to { width: 150px; }
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+@media (max-width: 768px) {
+    h1 { font-size: 1.8rem; }
+    h2 { font-size: 1.3rem; }
+    h3 { font-size: 1.1rem; }
+    
+    form {
+        padding: 2rem 1.5rem;
+    }
+    
+    table {
+        display: block;
+        overflow-x: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 { font-size: 1.5rem; }
+    
+    a[href*="nuevo"] {
+        width: 100%;
+        text-align: center;
+    }
+    
+    form {
+        padding: 1.5rem 1rem;
+    }
+}

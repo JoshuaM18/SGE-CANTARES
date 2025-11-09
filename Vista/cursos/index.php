@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Cursos por Carrera</title>
+     <link rel="stylesheet" href="css/cursos.css">
 </head>
 <body>
     <h1>Cursos</h1>

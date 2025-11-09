@@ -1,3 +1,6 @@
+<head>
+    <link rel="stylesheet" href="css/recurso.css">
+</head>
 <h2>Editar Material Didáctico</h2>
 
 <form action="index.php?c=recurso&a=actualizar" method="POST">

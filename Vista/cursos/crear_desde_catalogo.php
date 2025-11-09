@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Agregar Cursos desde Catálogo aaaaaaaaaaaaaaaa</title>
+ <link rel="stylesheet" href="css/cursos.css">
 <style>
 body {
     font-family: Arial, sans-serif;

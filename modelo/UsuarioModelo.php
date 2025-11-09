@@ -54,5 +54,32 @@ class UsuarioModelo {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
+public function obtenerAlumnosPorCurso($id_curso) {
+    $stmt = $this->db->conexion->prepare("
+        SELECT u.id_usuario, u.nombre_usuario, u.correo
+        FROM estudiantes e
+        INNER JOIN matriculas m ON e.id_estudiante = m.id_estudiante
+        INNER JOIN usuarios u ON e.id_usuario = u.id_usuario
+        INNER JOIN cursos_docentes cd ON m.id_asignacion = cd.id_asignacion
+        WHERE cd.id_curso = ? AND m.estado = 'Inscrito'
+    ");
+    $stmt->execute([$id_curso]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+public function obtenerTodosEstudiantes() {
+    $stmt = $this->db->conexion->prepare("
+        SELECT u.id_usuario 
+        FROM usuarios u
+        JOIN estudiantes e ON u.id_usuario = e.id_usuario
+        WHERE u.estado = 'Activo'
+    ");
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+
+
+
 }
 ?>

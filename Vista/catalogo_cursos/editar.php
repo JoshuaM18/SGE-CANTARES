@@ -1,6 +1,8 @@
+
 <!DOCTYPE html>
 <html>
 <head>
+     <link rel="stylesheet" href="css/catalogo.css">
     <title>Editar Curso del Catálogo</title>
 </head>
 <body>

@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Agregar Cursos desde Catálogo</title>
+     <link rel="stylesheet" href="css/cursos.css">
 </head>
 <body>
     <h1>Agregar Cursos desde Catálogo</h1>

@@ -1,3 +1,6 @@
+<head>
+    <link rel="stylesheet" href="css/recurso.css">
+</head>
 <h2>Material Didáctico</h2>
 
 <a href="index.php?c=recurso&a=nuevo&id_asignacion=<?= $_GET['id_asignacion'] ?>">Agregar nuevo recurso</a>

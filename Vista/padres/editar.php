@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Editar Padre</title>
+    <link rel="stylesheet" href="css/padres.css">
 </head>
 <body>
     <h1>Editar Padre</h1>

@@ -1,3 +1,6 @@
+<head>
+    <link rel="stylesheet" href="css/calificaciones.css">
+</head>
 <h1>Nueva Calificación</h1>
 <form action="index.php?c=Calificacion&a=guardar" method="POST">
     <label>Matrícula:</label>

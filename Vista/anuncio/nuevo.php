@@ -1,3 +1,7 @@
+<head>
+    <link rel="stylesheet" href="css/anuncio.css">
+</head>
+
 <?php
 // Variables disponibles: $cursos, $cursoSeleccionado, $docente
 ?>
@@ -7,7 +11,7 @@
 <form action="index.php?c=Anuncio&a=guardar" method="POST">
     <!-- Selección de curso -->
     <label for="id_curso">Curso (dejar vacío para anuncio general):</label><br>
-    <select name="id_curso">
+    <select name="id_curso" id="id_curso" onchange="toggleGeneral()">
         <option value="">-- General (Visible para todos) --</option>
         <?php foreach ($cursos as $curso): ?>
             <option value="<?= $curso['id_curso'] ?>" 
@@ -16,6 +20,13 @@
             </option>
         <?php endforeach; ?>
     </select>
+    <br><br>
+
+    <!-- Checkbox para anuncio general -->
+    <label>
+        <input type="checkbox" name="es_general" id="es_general" value="1" 
+            <?= empty($cursoSeleccionado) ? 'checked' : '' ?>> Anuncio General
+    </label>
     <br><br>
 
     <!-- Datos ocultos del docente -->
@@ -32,3 +43,15 @@
     <button type="submit">Guardar Anuncio</button>
     <a href="index.php?c=Anuncio&a=index&id_curso=<?= $cursoSeleccionado['id_curso'] ?? '' ?>">Cancelar</a>
 </form>
+
+<script>
+function toggleGeneral() {
+    const cursoSelect = document.getElementById('id_curso');
+    const esGeneralCheckbox = document.getElementById('es_general');
+    if (cursoSelect.value === "") {
+        esGeneralCheckbox.checked = true;
+    } else {
+        esGeneralCheckbox.checked = false;
+    }
+}
+</script>

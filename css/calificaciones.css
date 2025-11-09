@@ -1,0 +1,546 @@
+
+/* ========================================
+   VARIABLES Y CONFIGURACIÓN BASE
+   ======================================== */
+:root {
+    --rojo-principal: #E63946;
+    --azul-marino: #1D3557;
+    --azul-claro: #457B9D;
+    --amarillo: #F1C40F;
+    --blanco: #FFFFFF;
+    --gris-claro: #F8F9FA;
+    --gris-medio: #E9ECEF;
+    --verde-exito: #28A745;
+    --naranja-warning: #FD7E14;
+    --sombra: rgba(29, 53, 87, 0.1);
+    --sombra-hover: rgba(29, 53, 87, 0.15);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* ========================================
+   TÍTULOS PRINCIPALES (H1)
+   ======================================== */
+h1 {
+    color: var(--azul-marino);
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 4px solid var(--azul-claro);
+    position: relative;
+    animation: slideInDown 0.6s ease-out;
+}
+
+h1::before {
+    content: '📊 ';
+    font-size: 2rem;
+    margin-right: 0.5rem;
+}
+
+h1::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 150px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--azul-claro), var(--amarillo));
+    animation: expandWidth 0.8s ease-out 0.3s backwards;
+}
+
+/* ========================================
+   TÍTULOS SECUNDARIOS (H2) - CARRERAS
+   ======================================== */
+h2 {
+    color: var(--blanco);
+    background: linear-gradient(135deg, var(--azul-marino), var(--azul-claro));
+    padding: 1rem 1.5rem;
+    border-radius: 10px;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 2rem 0 1rem 0;
+    box-shadow: 0 4px 15px var(--sombra);
+    animation: fadeInUp 0.5s ease-out backwards;
+}
+
+h2::before {
+    content: '🎓 ';
+    margin-right: 0.8rem;
+}
+
+/* ========================================
+   INFO DEL CURSO
+   ======================================== */
+.info-curso {
+    background: linear-gradient(135deg, var(--azul-claro), #2c5f7f);
+    color: var(--blanco);
+    padding: 1.2rem 1.5rem;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 15px rgba(69, 123, 157, 0.3);
+    animation: slideInLeft 0.6s ease-out;
+}
+
+.info-curso::before {
+    content: '📚 ';
+    font-size: 1.3rem;
+    margin-right: 0.5rem;
+}
+
+/* ========================================
+   TABLAS
+   ======================================== */
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: var(--blanco);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px var(--sombra);
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+    animation: fadeIn 0.8s ease-out backwards;
+}
+
+/* Encabezados */
+thead th {
+    background: linear-gradient(135deg, var(--azul-claro), var(--azul-marino));
+    color: var(--blanco);
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 3px solid var(--amarillo);
+}
+
+/* Filas */
+tbody tr {
+    transition: all 0.3s ease;
+}
+
+tbody tr:nth-child(even) {
+    background: var(--gris-claro);
+}
+
+tbody tr:hover {
+    background: rgba(69, 123, 157, 0.08);
+    transform: scale(1.005);
+    box-shadow: 0 2px 8px var(--sombra);
+}
+
+/* Celdas */
+tbody td {
+    padding: 0.9rem;
+    border-bottom: 1px solid var(--gris-medio);
+    color: var(--azul-marino);
+    font-size: 0.95rem;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Columnas de notas (B1, B2, B3, B4) */
+td:nth-child(2),
+td:nth-child(3),
+td:nth-child(4),
+td:nth-child(5) {
+    text-align: center;
+    font-weight: 600;
+}
+
+/* Columna de promedio */
+td:nth-child(6) {
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--verde-exito);
+}
+
+/* Estilos para notas según rango */
+tbody td:nth-child(2),
+tbody td:nth-child(3),
+tbody td:nth-child(4),
+tbody td:nth-child(5),
+tbody td:nth-child(6) {
+    position: relative;
+}
+
+/* ========================================
+   ENLACES EN TABLAS
+   ======================================== */
+table a {
+    color: var(--azul-claro);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+table a:hover {
+    background: var(--azul-claro);
+    color: var(--blanco);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(69, 123, 157, 0.3);
+}
+
+/* ========================================
+   FORMULARIOS
+   ======================================== */
+form {
+    background: var(--blanco);
+    padding: 2.5rem;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px var(--sombra);
+    max-width: 100%;
+    margin: 0 auto 2rem;
+    animation: scaleIn 0.6s ease-out;
+    border-top: 5px solid var(--azul-claro);
+}
+
+form label {
+    display: block;
+    color: var(--azul-marino);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    margin-top: 1rem;
+    font-size: 0.95rem;
+}
+
+form label:first-of-type {
+    margin-top: 0;
+}
+
+/* Selects */
+form select {
+    width: 100%;
+    padding: 0.9rem 1.2rem;
+    border: 2px solid var(--gris-medio);
+    border-radius: 10px;
+    font-size: 1rem;
+    color: var(--azul-marino);
+    transition: all 0.3s ease;
+    background: var(--gris-claro);
+    cursor: pointer;
+}
+
+form select:focus {
+    outline: none;
+    border-color: var(--azul-claro);
+    background: var(--blanco);
+    box-shadow: 0 0 0 4px rgba(69, 123, 157, 0.1);
+}
+
+/* Inputs de número */
+input[type="number"] {
+    width: 80px;
+    padding: 0.6rem;
+    border: 2px solid var(--gris-medio);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    text-align: center;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    background: var(--gris-claro);
+}
+
+input[type="number"]:focus {
+    outline: none;
+    border-color: var(--azul-claro);
+    background: var(--blanco);
+    box-shadow: 0 0 0 3px rgba(69, 123, 157, 0.1);
+}
+
+/* Inputs de texto para observaciones */
+input[type="text"],
+textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border: 2px solid var(--gris-medio);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    transition: all 0.3s ease;
+    background: var(--gris-claro);
+    resize: vertical;
+}
+
+input[type="text"]:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--azul-claro);
+    background: var(--blanco);
+    box-shadow: 0 0 0 3px rgba(69, 123, 157, 0.1);
+}
+
+textarea {
+    min-height: 60px;
+}
+
+/* ========================================
+   BOTONES
+   ======================================== */
+button[type="submit"] {
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, var(--verde-exito), #1e7e34);
+    color: var(--blanco);
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1.5rem;
+    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.3);
+    display: inline-block;
+}
+
+button[type="submit"]:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(40, 167, 69, 0.4);
+    background: linear-gradient(135deg, #1e7e34, var(--verde-exito));
+}
+
+button[type="submit"]::before {
+    content: '💾 ';
+    margin-right: 0.5rem;
+}
+
+/* ========================================
+   ENLACES DE NAVEGACIÓN
+   ======================================== */
+a[href*="index"],
+a[href*="Volver"] {
+    display: inline-block;
+    padding: 0.8rem 1.5rem;
+    background: var(--gris-claro);
+    color: var(--azul-marino);
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: 2px solid var(--gris-medio);
+    margin-top: 1rem;
+}
+
+a[href*="index"]:hover,
+a[href*="Volver"]:hover {
+    background: var(--gris-medio);
+    border-color: var(--azul-claro);
+    transform: translateY(-2px);
+}
+
+a[href*="index"]::before,
+a[href*="Volver"]::before {
+    content: '← ';
+    margin-right: 0.3rem;
+}
+
+/* ========================================
+   MENSAJE SIN DATOS
+   ======================================== */
+p {
+    background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+    color: #856404;
+    padding: 1.2rem 1.5rem;
+    border-radius: 10px;
+    border-left: 5px solid var(--amarillo);
+    font-weight: 600;
+    animation: fadeIn 0.5s ease-out;
+    margin: 1rem 0;
+}
+
+p::before {
+    content: 'ℹ️ ';
+    margin-right: 0.5rem;
+}
+
+/* ========================================
+   SELECT DE BIMESTRE (ingresar.php)
+   ======================================== */
+form select[name="bimestre"] {
+    max-width: 300px;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, var(--gris-claro), var(--blanco));
+}
+
+/* ========================================
+   ESTILOS ESPECIALES PARA TABLA DE NOTAS
+   ======================================== */
+/* Tabla en ingresar.php */
+form table {
+    margin-top: 1.5rem;
+    border-top: 3px solid var(--azul-claro);
+}
+
+/* Inputs dentro de celdas */
+form table input[type="number"] {
+    width: 70px;
+    margin-bottom: 0.3rem;
+}
+
+form table input[type="text"] {
+    width: 100%;
+    max-width: 200px;
+}
+
+/* ========================================
+   BADGES PARA NOTAS (opcional)
+   ======================================== */
+.nota-alta {
+    color: var(--verde-exito);
+    font-weight: 700;
+}
+
+.nota-media {
+    color: var(--amarillo);
+    font-weight: 700;
+}
+
+.nota-baja {
+    color: var(--rojo-principal);
+    font-weight: 700;
+}
+
+/* ========================================
+   ANIMACIONES
+   ======================================== */
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes expandWidth {
+    from { width: 0; }
+    to { width: 150px; }
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+@media (max-width: 1024px) {
+    table {
+        font-size: 0.9rem;
+    }
+    
+    thead th,
+    tbody td {
+        padding: 0.8rem 0.6rem;
+    }
+}
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 1.8rem;
+    }
+    
+    h2 {
+        font-size: 1.2rem;
+        padding: 0.9rem 1.2rem;
+    }
+    
+    form {
+        padding: 2rem 1.5rem;
+    }
+    
+    /* Tabla scrollable en móviles */
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+    
+    .info-curso {
+        font-size: 1rem;
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.5rem;
+    }
+    
+    h2 {
+        font-size: 1.1rem;
+    }
+    
+    form {
+        padding: 1.5rem 1rem;
+    }
+    
+    button[type="submit"] {
+        width: 100%;
+        font-size: 1rem;
+    }
+    
+    thead th,
+    tbody td {
+        padding: 0.6rem 0.5rem;
+        font-size: 0.85rem;
+    }
+}

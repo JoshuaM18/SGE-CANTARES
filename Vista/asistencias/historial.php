@@ -3,16 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Historial de Asistencia por Día</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        table { border-collapse: collapse; width: 100%; margin-top: 10px; }
-        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-        th { background-color: #f2f2f2; }
-        input[type="date"] { padding: 5px; }
-        button { padding: 5px 10px; margin-left: 5px; }
-        a { text-decoration: none; color: #007BFF; }
-        a:hover { text-decoration: underline; }
-    </style>
+     <link rel="stylesheet" href="css/asistencia.css">
 </head>
 <body>
     <h1>Historial de Asistencia por Día</h1>

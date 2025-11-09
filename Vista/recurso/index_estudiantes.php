@@ -1,3 +1,6 @@
+<head>
+    <link rel="stylesheet" href="css/recurso.css">
+</head>
 <h2>Material Didáctico - Mis cursos</h2>
 
 <?php if (!empty($vista_asignaciones)): ?>

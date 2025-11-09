@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+     <link rel="stylesheet" href="css/catalogo.css">
     <title>Agregar Curso al Catálogo</title>
 </head>
 <body>

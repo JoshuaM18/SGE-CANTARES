@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Nuevo Padre</title>
+    <link rel="stylesheet" href="css/padres.css">
 </head>
 <body>
     <h1>Registrar Padre</h1>

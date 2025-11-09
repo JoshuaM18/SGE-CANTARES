@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="css/carrera.css">
     <title>Editar Carrera</title>
 </head>
 <body>

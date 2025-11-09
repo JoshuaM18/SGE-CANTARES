@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Listado de Carreras</title>
+    <link rel="stylesheet" href="css/carrera.css">
 </head>
 <body>
     <h1>Carreras</h1>

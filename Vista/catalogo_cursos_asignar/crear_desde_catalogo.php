@@ -1,5 +1,8 @@
+<head>
+     <link rel="stylesheet" href="css/catalogo.css">
+</head>
 <form action="index.php?c=CatalogoCursoAsignar&a=guardar" method="POST">
-    <a href="index.php?c=NuevoCurso&a=index">➕ Crear curso individual</a>
+    <a href="index.php?c=NuevoCurso&a=index"> Crear curso individual</a>
     <br>
 
     <label>Carrera:</label><br>

@@ -28,26 +28,32 @@ class MensajeController {
     require __DIR__ . '/../vista/mensajes/nuevo.php';
 }
 
-
-
-
     // Procesar envío de mensaje
     public function enviar() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $id_remitente = $_POST['id_remitente'];
-            $id_destinatario = $_POST['id_destinatario'];
-            $asunto = $_POST['asunto'];
-            $contenido = $_POST['contenido'];
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $id_remitente = $_POST['id_remitente'];
+        $id_destinatario = $_POST['id_destinatario'];
+        $asunto = $_POST['asunto'];
+        $contenido = $_POST['contenido'];
 
-            $resultado = $this->modelo->enviarMensaje($id_remitente, $id_destinatario, $asunto, $contenido);
+        $resultado = $this->modelo->enviarMensaje($id_remitente, $id_destinatario, $asunto, $contenido);
 
-            if ($resultado) {
-                header("Location: index.php?c=Mensaje&a=bandejaEntrada&id_usuario=$id_remitente");
-                exit();
-            } else {
-                echo "<p>Error al enviar el mensaje. Inténtalo de nuevo.</p>";
-            }
+        if ($resultado) {
+            // 🔹 Integración Notificaciones
+            require_once __DIR__ . '/../controller/NotificacionController.php';
+
+            $notificacionController = new NotificacionController();
+            $titulo_notif = "Nuevo mensaje recibido";
+            $mensaje_notif = "Has recibido un nuevo mensaje: '{$asunto}'";
+            $notificacionController->crearNotificacion($id_destinatario, $titulo_notif, $mensaje_notif);
+
+            header("Location: index.php?c=Mensaje&a=bandejaEntrada&id_usuario=$id_remitente");
+            exit();
+        } else {
+            echo "<p>Error al enviar el mensaje. Inténtalo de nuevo.</p>";
         }
     }
+}
+
 }
 ?>

@@ -1,11 +1,20 @@
 <?php
+require_once __DIR__ . '/NotificacionController.php';
 require_once __DIR__ . '/../modelo/AnuncioModelo.php';
+require_once __DIR__ . '/../modelo/UsuarioModelo.php';
 
 class AnuncioController {
     private $modelo;
+    private $notificacionController;
+    private $usuarioModelo;
 
     public function __construct() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
         $this->modelo = new AnuncioModelo();
+        $this->notificacionController = new NotificacionController();
+        $this->usuarioModelo = new UsuarioModelo();
     }
 
     // --- Mostrar anuncios por curso (Docente) ---
@@ -42,36 +51,35 @@ class AnuncioController {
 
     // --- Mostrar formulario para crear un anuncio ---
     public function nuevo() {
-    $id_curso = $_GET['id_curso'] ?? null;
+        $id_curso = $_GET['id_curso'] ?? null;
 
-    $cursoSeleccionado = null;
-    if ($id_curso) {
-        // Obtener datos del curso solo si se seleccionó
-        $cursoSeleccionado = $this->modelo->obtenerCursoPorId($id_curso);
+        $cursoSeleccionado = null;
+        if ($id_curso) {
+            $cursoSeleccionado = $this->modelo->obtenerCursoPorId($id_curso);
+        }
+
+        $id_usuario = $_SESSION['usuario']['id_usuario'] ?? null;
+        $docente = null;
+        if ($id_usuario) {
+            $stmt = $this->modelo->db->conexion->prepare("SELECT id_docente FROM docentes WHERE id_usuario = ?");
+            $stmt->execute([$id_usuario]);
+            $docente = $stmt->fetch(PDO::FETCH_ASSOC);
+        }
+
+        $cursos = $this->modelo->obtenerCursosDocente($docente['id_docente'] ?? 0);
+
+        require __DIR__ . '/../vista/anuncio/nuevo.php';
     }
 
-    // Obtener docente logueado (opcional para anuncios generales)
-    $id_usuario = $_SESSION['usuario']['id_usuario'] ?? null;
-    $docente = null;
-    if ($id_usuario) {
-        $stmt = $this->modelo->db->conexion->prepare("SELECT id_docente FROM docentes WHERE id_usuario = ?");
-        $stmt->execute([$id_usuario]);
-        $docente = $stmt->fetch(PDO::FETCH_ASSOC);
-    }
-
-    // Obtener lista de cursos para el select
-    $cursos = $this->modelo->obtenerCursosDocente($docente['id_docente'] ?? 0);
-
-    require __DIR__ . '/../vista/anuncio/nuevo.php';
-}
-
-    // --- Guardar anuncio nuevo ---
+   // --- Guardar anuncio nuevo y crear notificaciones ---
 public function guardar() {
     $titulo = $_POST['titulo'] ?? null;
     $descripcion = $_POST['descripcion'] ?? null;
     $id_curso = $_POST['id_curso'] ?? null;
 
-    // Obtener docente logueado
+    // Si no hay curso seleccionado, es un anuncio general
+    $es_general = empty($id_curso) ? 1 : 0;
+
     $id_usuario = $_SESSION['usuario']['id_usuario'];
     $stmt = $this->modelo->db->conexion->prepare("SELECT id_docente FROM docentes WHERE id_usuario = ?");
     $stmt->execute([$id_usuario]);
@@ -83,17 +91,32 @@ public function guardar() {
         return;
     }
 
-    // Guardar anuncio (general o por curso)
+    // Guardar anuncio
     $stmt = $this->modelo->db->conexion->prepare("
-        INSERT INTO anuncios (id_curso, id_docente, titulo, descripcion, fecha_publicacion, estado)
-        VALUES (?, ?, ?, ?, NOW(), 'Activo')
+        INSERT INTO anuncios (id_curso, id_docente, titulo, descripcion, fecha_publicacion, estado, es_general)
+        VALUES (?, ?, ?, ?, NOW(), 'Activo', ?)
     ");
+    $stmt->execute([$id_curso ?: null, $id_docente, $titulo, $descripcion, $es_general]);
 
-    // Si es general, id_curso = NULL
-    $stmt->execute([$id_curso ?: null, $id_docente, $titulo, $descripcion]);
+    // 🔹 Crear notificaciones
+    if ($es_general) {
+        $alumnos = $this->usuarioModelo->obtenerTodosEstudiantes();
+    } else {
+        $alumnos = $this->usuarioModelo->obtenerAlumnosPorCurso($id_curso);
+    }
+
+    foreach ($alumnos as $alumno) {
+        // Ajuste importante: determinar correctamente el ID de usuario
+        $id_usuario_destino = $alumno['id_usuario'] ?? $alumno['id_estudiante'];
+        if ($id_usuario_destino) {
+            $titulo_notif = "Nuevo anuncio";
+            $mensaje_notif = "Se ha publicado un nuevo anuncio: '{$titulo}'. {$descripcion}";
+            $this->notificacionController->crearNotificacion($id_usuario_destino, $titulo_notif, $mensaje_notif);
+        }
+    }
 
     // Redirigir
-    if ($id_curso) {
+    if ($id_curso && !$es_general) {
         header("Location: index.php?c=Anuncio&a=index&id_curso={$id_curso}");
     } else {
         header("Location: index.php?c=Anuncio&a=index");
@@ -131,7 +154,6 @@ public function guardar() {
             return;
         }
 
-        // Obtener cursos donde está matriculado
         $stmt = $this->modelo->db->conexion->prepare("
             SELECT c.id_curso, c.nombre_curso, ca.nombre_carrera
             FROM matriculas m
@@ -147,7 +169,7 @@ public function guardar() {
         $id_curso = $_GET['id_curso'] ?? ($cursos[0]['id_curso'] ?? null);
         $anuncios = $id_curso ? $this->modelo->obtenerAnunciosPorCurso($id_curso) : [];
 
-        // Obtener anuncios generales visibles para todos
+        // Anuncios generales visibles para todos
         $anunciosGenerales = $this->modelo->obtenerAnunciosGenerales();
 
         require __DIR__ . '/../vista/anuncio/ver_estudiante.php';

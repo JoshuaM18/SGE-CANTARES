@@ -44,28 +44,115 @@ foreach ($mensajesEnviados as $m) {
 <head>
 <meta charset="UTF-8">
 <title>Bandeja de Entrada</title>
-<link rel="stylesheet" href="css/mensajes.css">
+<link rel="stylesheet" href="css/mensajeria.css">
 <style>
-.chat-container { display: flex; max-width: 900px; margin: 20px auto; border: 1px solid #ccc; }
-.chat-sidebar { width: 30%; border-right: 1px solid #ccc; padding: 10px; }
-.chat-main { flex: 1; padding: 10px; display: flex; flex-direction: column; }
-#chatContenido { flex: 1; overflow-y: auto; border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; height: 400px; }
-.chat-input { display: flex; }
-.chat-input textarea { flex: 1; resize: none; }
-.btn-nuevo { display: block; margin-bottom: 10px; padding: 5px 10px; background: #4CAF50; color: #fff; border: none; cursor: pointer; text-decoration: none; text-align: center; }
-.chat-item { cursor: pointer; padding: 5px; border-bottom: 1px solid #ddd; }
-.chat-item.selected { background: #eee; }
-.mensaje.enviado { text-align: right; background: #d1ffd1; margin: 5px; padding: 5px; border-radius: 5px; }
-.mensaje.recibido { text-align: left; background: #f1f1f1; margin: 5px; padding: 5px; border-radius: 5px; }
+:root {
+    --amarillo: #f1c40f;
+    --azul-marino: #2c3e50;
+    --gris-claro: #f9f9f9;
+}
+
+/* Contenedor general */
+.chat-container {
+    display: flex;
+    height: 90vh;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Sidebar */
+.chat-sidebar {
+    width: 250px;
+    background-color: #fff; /* blanco */
+    border-right: 1px solid #ccc;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+/* Botón nuevo */
+#btnNuevo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 12px;
+    border: none;
+    background: var(--amarillo);
+    color: var(--azul-marino);
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(241,196,15,0.3);
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+#btnNuevo::before {
+    content: '✏️';
+    margin-right: 0.3rem;
+}
+
+/* Chat principal */
+.chat-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--gris-claro);
+}
+
+/* Contenido de mensajes */
+#chatContenido {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+/* Input */
+.chat-input {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #ccc;
+    background: #fff;
+}
+
+.chat-input textarea {
+    flex: 1;
+    resize: none;
+    padding: 5px;
+}
+
+.chat-input button {
+    margin-left: 5px;
+}
+
+/* Mensajes */
+.mensaje {
+    margin-bottom: 0.5rem;
+    padding: 5px 10px;
+    border-radius: 8px;
+    max-width: 80%;
+    word-wrap: break-word;
+}
+
+.enviado {
+    background-color: #d1e7dd;
+    align-self: flex-end;
+}
+
+.recibido {
+    background-color: #fff;
+    align-self: flex-start;
+}
 </style>
 </head>
 <body>
 
 <div class="chat-container">
 
-    <a href="/SGE/Vista/mensajes/nuevo.php" class="btn-nuevo">📤 Nuevo Mensaje</a>
-
+    <!-- Sidebar con botón -->
     <div class="chat-sidebar">
+        <button id="btnNuevo" onclick="location.href='/SGE/Vista/mensajes/nuevo.php'">Nuevo Mensaje</button>
         <h2>Conversaciones</h2>
         <ul id="listaChats">
             <?php foreach ($conversaciones as $conv): ?>
@@ -78,6 +165,7 @@ foreach ($mensajesEnviados as $m) {
         </ul>
     </div>
 
+    <!-- Área principal de chat -->
     <div class="chat-main">
         <div id="chatContenido">
             <p class="text-muted">Selecciona un chat para leer mensajes.</p>
